@@ -1,0 +1,237 @@
+HTML  ---  htper text markup language  ---  超文本标记语言
+超文本就是指页面内可以包含图片、链接，甚至音乐、程序等非文字元素。
+标记语言：标记（标签）构成的语言。
+网页==HTML文档，由浏览器解析，用来展示。
+<!DOCTYPE html>告诉浏览器下面的代码全部按照标准去渲染。
+
+<>标签语言
+<head>标签体<head>
+
+框架：
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>---------在网页上显示标题。
+</head>
+<body></body>
+</html>
+
+<head>标签体</head>闭合标签
+<标签体>自闭合标签
+
+<h1 name="alex"> hello </h1>标签头里面的name是标签的属性，属性只能出现在开始标签或自闭合标签中。
+属性名字全部小写，属性值必须使用双引号或者单引号包裹，如果属性值和属性名完全一样，直接写属性名即可。
+
+方法：
+<input type="text" readonly>  input，在文本中出现搜索框，类型是文本，readonly表示只读，这是个自闭合标签，也可以只写input。
+<h1>text<h1> h1相当于标题，显示出来的文本会比较大。
+<h2>text<h2> h2下一级标题，显示出来的文本会比较小。(以此类推，还有h3,h4,h5,h6......)
+<script>
+    alert(text) ---------------------弹窗
+<script>
+
+
+----------------------------------------------<head>标签------------------------------------------------
+<meta>
+         meta标签的组成：meta标签共有两个属性，它们分别是http-equiv属性和name 属性，不同的属性又有不同的参数值，这些不同的参数值就实现了不同的网页功能。
+
+        1: name属性主要用于描述网页，与之对应的属性值为content，content中的内容主要是便于搜索引擎机器人查找信息和分类信息用的。     
+<meta name="keywords" content="meta总结,html meta,meta属性,meta跳转">
+<meta name="description" content="老男孩培训机构是由一个老的男孩创建的">
+
+        2: http-equiv顾名思义，相当于http的文件头作用，它可以向浏览器传回一些有用的信息，以帮助正确和精确地显示网页内容，与之对应的属性值为content，content中的内容其实就是各个参数的变量值。   
+<meta http-equiv="Refresh" content="2;URL=https://www.baidu.com"> //(注意后面的引号，分别在秒数的前面和网址的后面)
+<meta http-equiv="content-Type" charset=UTF8">
+<meta http-equiv = "X-UA-Compatible" content = "IE=EmulateIE7" /> 
+
+<meta http-equiv="refresh" content="2;URL=https://www.baidu.com"> ------两秒后跳转到百度网站。
+<meta http-equiv="X-UA-Compatible"  content = "IE=EmulateIE7"/>  --------加上此标签之后，可兼容IE7。
+<meta http-equiv="content-type"  charset = "UTF-8" > 
+<meta name="keywords" content="关键词"> --------------- 通过里面的关键词可以搜索到本网站。
+<meta name="description" content="内容">  --------------- 当你搜索出本网页之后，不用点进去就可以看到一些对本网页进行描述的内容。
+
+非meta标签
+<link rel="stylesheet" href="css.css">-------------
+<script src="hello.js"></script>　-----------------将上面这两个标签加入到head标签下表示引入css和js。
+
+<title>oldboy</title> ------------------------------网页标题
+<link rel="icon" href="http://www.jd.com/favicon.ico"> ----------------标题旁边的图标，后面的href是导入图标的位置。
+
+-----------------------------------------------<body>标签-----------------------------------------------
+<h1>text</h1>  h标签独占一行，也就是说如果同一行你还写了<h2>，打印出来之后依然是h1占一行，h2占一行。
+
+在body标签中也可以直接写上文本，那么打印出来的内容就是你输入的内容。需要注意的是你输入的内容会打印在同一行上，你可以通过<br>来实现换行。（</br>加上斜杠也是可以的，效果不变）
+
+<p>text</p> p标签的内容也会独占一行。而且上下行之间的距离会跟普通换行时不一样。
+
+<b>text</b> 标签的内容会进行加粗，但不进行换行。
+<strong>text</strong> 跟b标签效果一样。
+<strike>text</strike> 在text上加横线。
+上面三个是内联标签，也就是效果范围是自己拥有的字符。与之对应的是块级标签，自己独占一行，效果作用于整行。
+
+<em>text</em> 斜体。
+<sub>text</sub>下标。
+<sup>text</sup>上标。
+<hr> ------------  横线。
+
+<div>text</div>  没有任何自带效果，所以可以根据自己的需要添加任意效果。
+<div style="color: #ff7292  ;  background: #e554ff  ;  height:20px  ;  width:10cm ">hello</div> 在里面可以调任意想要的效果。
+<span>text</span> 与div标签都是没有自带效果的，它是内联标签，效果仅限于自己所拥有的字符。div为块级标签。
+
+特殊字符：
+< &lt;
+> &gt；
+"  &quot；
+版权标签 &copy;  &reg;
+空格 &nbsp；
+（需要时可上网搜索HTML特殊字符表）
+
+块级标签可以内嵌内联标签也可以内嵌块级标签，如：
+<div>
+    <span>
+    </span>
+</div>
+内联标签可以内嵌内联标签，但不能内嵌块级标签。
+
+<img>图形标签
+<img scr="路径"   alt="如果浏览器无法显示图片，图片将会替换成alt里面文本"   title="鼠标悬浮于图片上，会显示title的内容">
+src: 要显示图片的路径。
+alt: 图片没有加载成功时的提示。
+title: 鼠标悬浮时的提示信息。
+width: 图片的宽。
+height:图片的高 (宽高两个属性只用一个会自动等比缩放。)
+
+<a>超链接标签(锚标签)：
+<a href="网址">text</a> 单击text原网页将跳转到新网页。
+<a href="网址" target="_blank">text</a> 单击text会另外打开一个网页。
+（text内容可以是图片）
+
+利用a标签实现网页回到顶部：
+<div  id="abc">text</div> ------给text一个特定的id，当然，前面的div可以是img也可以是a等等，id可以用于很多地方。
+<a href="#abc">text</a>  ------单击text会跳转到id=abc的地方，写上#的目的是告诉浏览器直接在本页面进行跳转。
+
+列表标签：
+ul(无序列表)标签：
+<ul>
+    <li>uuu</li>  
+    <li>123</li>  
+    <li>abc</li> 
+</ul>
+效果：
+-uuu
+-123
+ -abc
+
+ol(有序列表)标签：
+<ol>
+    <li>uuu</li> 
+    <li>123</li> 
+    <li>abc</li>  
+</ol>
+效果：
+1.uuu
+2.123
+3.abc
+
+dl(定义列表)标签：
+<dl>
+    <dt>第一章</dt>
+    <dd>第一节</dd>
+    <dd>第二节</dd>
+    <dd>第三节</dd>
+</dl>
+效果：
+第一章
+    第一节
+    第二节
+    第三节
+
+<table>表格标签：
+border: 表格边框。
+cellpadding: 内边距。
+cellspacing: 外边距。
+width: 像素 百分比。（最好通过css来设置长宽）
+<tr>: table row
+         <th>: table head cell
+         <td>: table data cell
+rowspan:  单元格竖跨多少行
+colspan:  单元格横跨多少列（即合并单元格）
+<th>: table header <tbody>(不常用): 为表格进行分区。
+
+<form>表单标签：与server端打交道，将数据发送给server端。
+<form action="服务器地址" method="提交方式get或者post" enctype="multipart/form-data"> ---后面的enctype是上传文件时需要加进去的。
+    用户名<input type="text" name="usernmae" placeholder="在输入框内显示的内容" disabled> --明文输入，后面的disabled表示不让用户进行任何操作，输入框会变成灰色。
+    密码<input type="password" name="password" placeholder="在输入框内显示的内容"> --------密文输入
+    多选框<input type="checkbox" name="hobby" checked> -----多选框，▢，后面的checked表示默认选择。
+    单选框<input type="radio" name="hobby">
+    选择文件<input type="file" name="put_file"> --------------选择需要上传的文件。
+	<input type="text" value="默认输入的内容">
+    重置数据<input type="reset" value="按钮显示的内容"> -----将input的内容重置。
+    隐式提交<input type="text" value="按钮显示的内容" style="display:None">，该标签不显示，但会与其他标签一样提交数据。
+    提交数据<input type="submit" value="按钮显示的内容"> ---将input的内容打包发送给sever端。（发送一个字典，键是name，值是value，输入的内容会赋值给value，而复选框或者单选框所选择的选项，会直接把里面的name以及value组成字典发送出去，所以里面需要写上一个value）
+    提交数据<input type="button" value="按钮显示的内容"> ---在绑定内容之前，button键只能看，不会有任何功能。
+    提交数据<button value="传回去的值">按钮显示的内容</button>button按钮，与submit一样，都可以提交form表单的值。submit按钮显示的内容和传回去的内容一致，由value控制，而button显示的内容和传回的值可以不同，前者填写于标签中间，后者由value控制。
+    select标签，下拉列表:
+    <select name="province" multiple  size="2" onchange="function(this)"> -------multiple表示可以多选，size=2表示只显示两个选项，因此可以通过拉动列表来看其他选项。onchange表示一旦选择了下拉列表里面的option，就会触发函数function，传入的参数this为本次选择的option。
+        <option value="beijing">北京市</option>
+        <option value=""  selected>上海市</option> ----selected表示默认选择。
+        <option value="">天津市</option>
+        <option value="">广东省</option>
+
+        <optgroup label="ABCD"> ------------------------相当于在省份ABCD下面加入了A、B、C、D市，但该省份不能选择，只能选择下面的城市。
+            <option value="">A市</option>
+            <option value="">B市</option>
+            <option value="">C市</option>
+            <option value="">D市</option>
+        </optgroup>
+    </select>
+（在js中，通过 .selectedIndex可以找到你选择的option标签的索引位置，然后通过索引 .options[ .selectedIndex]获取到你选择的标签，二级联动，选择省份，城市）
+    <textarea name="desc" rows="10" cols="10">text</textarea> ------文本框，当你写了后面的text后，文本框中相当于默认写了text。
+    
+    <label for="www">姓名</label>
+    <input id="www" type="text"> -----------------这两个标签将会连接起来，相当于在input前面加了个姓名，这时候点击姓名就跟点击输入框一样。
+
+
+    <table border="1px" cellpadding="5px" cellspacing="50px"> ----------table标签，border：加边框，cellpadding: 内边距，cellspacing: 外边距。px：像素。
+        <thead> ----------------------------------------------------------------表头。
+        <tr> ---------------------------------------------------------------------tr另起一行。
+            <th>111</th> -------------------------------------------------------th以标题形式书写，内容居中。
+            <th>222</th>
+            <th>333</th>
+        </tr>
+        </thead>
+        <tbody> ----------------------------------------------------------------表体。
+        <tr>
+            <td rowspan="2">1111111</td> -----------------------------------td普通形式书写内容，内容不会居中。
+
+，rowspan="2"，内容独占两行。
+            <td>2222222</td>
+            <td>3333333</td>
+        </tr>
+        <tr>
+            <td colspan="2">1111111</td> ------------------------------------colspan="2"，内容独占两列。
+            <td>2222222</td>
+            <td>3333333</td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
+单选框例子：
+音乐<input type="radio" name="hobby" value="music">
+电影<input type="radio" name="hobby" value="movie"> ----------当type是radio，而name相同时，选项只能选择一个。
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+给input或者button等绑定函数：
+（下面是一个搜索按钮的实例，在input内输入网址，通过button键点击搜索，从而打开网站）
+<input type="text" id="id1"> ----------------------------------------给input标签绑定id。
+<button id="id2" onclick="open2">搜索</button> ----------------onclick，只要点击button键便会触发open2函数。
+
+定义函数：
+function  open2()
+{
+ele=document.getElementById("id1") ------------------------------ele就是id等于id1的标签。
+value=ele.value ------------------------------------------------------获取ele的value（即input输入框内输入的内容）。
+open（value）--------------------------------------------------------打开value对应的网页。
+}

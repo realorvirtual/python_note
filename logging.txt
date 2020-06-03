@@ -1,0 +1,25 @@
+logging模块：
+武林传说
+一般来说，直接使用logging模块只会在屏幕上显示而不会改变文件，使用了format格式化之后可以改变文件，
+但不会在屏幕上显示，那怎么做才能既会显示又会改变文件呢？故事开始了......
+import logging
+logger=logging.getLogger()                       这个人会吸星大法
+fh=logging.FileHandler("文件名.log","w")         这个人会改变文件
+ch=logging.StreamHandle()                        这个人会改变屏幕
+fm=logging.Formatter("%(asctime)s %(message)s")  给fh、ch两个人定一个需要显示和记录的内容
+fh.setFormatter(fm)                              fh记下了内容
+ch.setFormatter(fm)                              ch记下了内容
+logger.addHandler(fh)                            logger吞了fh，学会了改变文件
+logger.addHandler(ch)                            logger吞了ch，学会了改变屏幕
+logger.setLevel("DEBUG")                         将level设置为debug
+logger成为了大哥，下次直接调用，而不用再调用logging
+logger.debug()
+logger.info()
+logger.warning()
+logger.error()
+logger.critical()
+
+logger=logging.getLogger(“mylogger”)，括号里面可以填名称参数，mylogger为root的子对象，不填的话默认为root，即根对象。如果两个实例（logger、logger2）的名称参数相同的话，它们的设置也会同时设置，比如，
+logger.setLevel("debug")，logger2.setLevel("info")，那么最终的level为info，即输出总共8条信息，只要同一个名称参数，创造出来的实例就是同一个（虽然名字不同）。
+（创建mylogger的子对象：mylogger.son)
+注意：如果父对象和子对象同时存在，父对象会正常地打印自己，而子对象会打印多次，父对象有多少级，子对象就会多打印多少次（例如有一个父级，子级就打印两次）。

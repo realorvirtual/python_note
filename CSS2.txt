@@ -1,0 +1,133 @@
+CSS文本属性：
+font-size: 10px -------------------字体大小
+
+text-align: center-----------------文本居中
+
+line-height: 200px;   文本行高 通俗的讲，文字高度加上文字上下的空白区域的高度 50%:基于字体大小的百分比。
+（当你有背景的时候，想要文字在背景上上下居中，可以让line-height等于背景的高）
+
+vertical-align:－4px  设置元素内容的垂直对齐方式 ,只对行内元素有效，对块级元素无效
+
+text-indent: 150px ---------------首行缩进
+
+letter-spacing: 10px--------------字符间距
+
+word-spacing: 20px--------------单词间距（英文单词）
+
+text-transform: capitalize--------单词首字母大写
+
+
+----------------------------------------------------------------------
+CSS边框属性：
+{width：200px；height：200px；border：10px  solid  red} -------------设置外围长宽都为200px的边框，边框
+类型为【solid（连续型） dashed（断续型），可以使用border-style来选择线型】，颜色为red。
+（当然还可以单独控制某一条边框，例如左边框，border-left）
+
+
+----------------------------------------------------------------------
+CSS列表属性：
+ul,ol{   list-style: decimal-leading-zero;-------------- 01.text
+         list-style: none;--------------------------------- text
+         list-style: circle;--------------------------------- ○text
+         list-style: upper-alpha;------------------------- A.text
+         list-style: disc; } -------------------------------- ●text
+
+
+----------------------------------------------------------------------
+dispaly属性：
+none
+block
+inline
+span{display：inline-block} ---------------------将span内联标签转换为内联-块级标签。
+display:inline-block可做列表布局，其中的类似于图片间的间隙小bug可以通过如下设置解决：
+outer{
+            border: 3px dashed;
+            word-spacing: -5px;
+        }
+
+
+-----------------------------------------------------------------------
+外边距和内边：
+width和height设置的是初始背景大小。
+border：10px ------背景之外加上一层10px厚的边框。
+padding：10px ----背景层向外扩张10px。
+margin：10px -----整个图像的最外层向外扩张10px，扩张区域显示为空白，主要用于分隔周围图像，也可以理解为元素与元素之间的间距。（当上下两个元素都加上margin时，会取最大的值作为它们的间距，当左右两个元素加上margin时，会把两个值相加而成为他们的间距）
+（如果想要同时调节四个方向的边距可以这样做，margin{10px 10px 10px 10px}，相对应于上，右，下，左，即顺时针方向）
+margin:10px 5px 15px 20px;-----------上 右 下 左
+margin:10px 5px 15px;----------------上 右左 下
+margin:10px 5px;---------------------上下  右左
+margin:10px;    ---------------------上右下左
+（margin的时候，margin的对象会去寻找边界，必须有边界才能有效果，比如说你想把一个小的正方形移动到一个大的正方形的中心，那么你必须在大的正方形外边加上一层边界，padding或者border都行）
+（想要子级box居中，可以这样做margin：0 auto）
+
+边框在默认情况下会定位于浏览器窗口的左上角，但是并没有紧贴着浏览器的窗口的边框，这是因为body本身也是一个盒子（外层还有html），在默认情况下，   body距离html会有若干像素的margin，具体数值因各个浏览器不尽相同，所以body中的盒子不会紧贴浏览器窗口的边框了，为了验证这一点，加上：
+body{
+    border: 1px solid; ----------------------------------给body加上一层1px的边框，以便看出body的大小以及位置。
+    background-color: cadetblue;
+}
+>>>>解决方法：
+body{
+    margin: 0;
+}
+
+
+-----------------------------------------------------------------------
+先来了解一下block元素和inline元素在文档流中的排列方式。
+
+block元素通常被现实为独立的一块，独占一行，多个block元素会各自新起一行，默认block元素宽度自动填满其父元素宽度。block元素可以设置width、height、margin、padding属性；
+
+inline元素不会独占一行，多个相邻的行内元素会排列在同一行里，直到一行排列不下，才会新换一行，其宽度随元素的内容而变化。inline元素设置width、height属性无效。inline元素的margin和
+padding属性。水平方向的padding-left, padding-right, margin-left, margin-right都产生边距效果；但竖直方向的padding-top, padding-bottom, margin-top, margin-bottom不会产生边距效果。
+
+常见的块级元素有 div、form、table、p、pre、h1～h5、dl、ol、ul 等。
+常见的内联元素有span、a、strong、em、label、input、select、textarea、img、br等。
+
+
+-----------------------------------------------------------------------
+float：【left，right】向左边浮动，向右边浮动。
+clear：【left，right，none，both】清除浮动。 
+
+clear语法：
+clear : none | left | right | both
+取值：
+none : 默认值。允许两边都可以有浮动对象
+left : 不允许左边有浮动对象
+right : 不允许右边有浮动对象
+both : 不允许有浮动对象
+但是需要注意的是：clear属性只会对自身起作用，而不会影响其他元素。
+如果一个元素的右侧有一浮动对象，而这个元素设置了不允许右边有浮动对象，
+即clear：right，则这个元素会自动下移一格，达到本元素右边没有浮动对象的目的。
+
+
+------------------------------------------------------------------------
+定位position：
+
+1.fixed：在理论上，被设置为fixed的元素会被定位于浏览器窗口的一个指定坐标，不论窗口是否滚动，它都会固定在这个位置。
+{position：fixd；bottom：10px；right：10px} ---------------------对象被定位在距离底部10px，右边10px的位置。
+
+2.relative：使用top、left、bottom、right定位移动之后，原始位置照样占着，其他文档的位置不会发生变化。该定位是基于原始位置的。
+
+3.absolute：使用top、left、bottom、right定位移动之后，该文档相当于使用了float，其他文档将会顶上去占住原定位文档的位置。
+如果该文档的父级使用了定位，例如使用了position：relative或absolute，那么该文档将会以其父级文档作为参考对象来进行定位。如果其父级
+文档没使用定位，那么该文档将会以body作为参考对象进行定位。（absolute之后，该文档将会脱离文档流，使用margin时将会按照原始位置来进行扩张）
+
+margin:10px 5px 15px 20px;-----------上 右 下 左
+margin:10px 5px 15px;----------------上 右左 下
+margin:10px 5px;---------------------上下  右左
+margin:10px;    ---------------------上右下左
+
+可以使用 top:50% 来进行居中操作，需要注意的是，这里的50%指的是子级的上边缘距父级上边缘的距离。
+
+盒子上下左右居中显示：
+position:fixed;
+            margin:auto;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            width:200px;
+            height:150px;
+            background: #ccc
+------------------------------------------------------------------------
+背景里面移动图片：
+background：url（“图片”） non-repeat  50px  100px    -----------向右边移动50px，向下边移动100px。图片不重复显示。

@@ -1,0 +1,17 @@
+day56 基于BootStrap和FontAwesome制作页面：
+1.在static文件夹下面新建三个文件夹“css，js，plugins”，将自己写的css、js分别放在css、js文件夹，然后将插件放入plugins文件夹
+2.在html文件里引入css样式：    在head标签里面：<link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+
+
+
+
+没学完：day61，11
+
+
+
+
+
+
+
+亮点：
+Tornado框架：支持异步非阻塞（IO多路复用）

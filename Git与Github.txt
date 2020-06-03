@@ -1,0 +1,52 @@
+git：
+
+1.git init     初始化
+
+2.git add file.py    让git管理代码文件file.py，把文件添加到仓库（git add .   ：管理当前文件夹下的所有文件）
+
+3.git commit -m "描述信息"      这是告诉git把文件提交到仓库，生成版本
+
+4.git reset --hard  版本号      回滚之前的版本号
+
+5.git branch dev 创建分支dev
+
+6.git branch 查看分支
+
+6.git checkout dev 切换到分支dev
+
+7.git merge dev 合并分支devqq
+
+8.git branch -d dev 删除分支dev
+
+9.git remote add origin https://github.com/realorvirtual/myfirst.git   为我们上传的地址取个别名：origin
+
+10.git push -u origin master 将master分支推送到GitHub
+
+11.git clone https://github.com/realorvirtual/myfirst.git 将GitHub的分支下载下来，下载下来之前需要先创建一个新的文件夹，因为这是将整个分支下载下来，内容包含该分支上所有的版本
+（下载下来之后，使用git branch命令只会显示一条分支master，这没关系，你可以直接使用git checkout dev来切换到dev分支，然后第二次使用git branch时便可以显示出dev分支了）
+
+12.git pull origin dev 根据你已有的文件从GitHub上下载新的文件以进行更新（只下载本地没有的版本，而不是全部版本一起下载）
+（ git pull origin dev 相当于git fetch origin + git merge origin/dev ）
+
+13.git rebase -i HEAD~3 ：将最近的三条记录合并，回车之后进入文档，将第一第二行的pick写成s，然后在最后一行写上 ”：wq“，表示保存并退出
+（使提交记录变得简洁）
+
+常用命令：
+1.git status：检测当前文件夹的状态，会列举出当前文件夹里面的文件（1.红色：新增的文件，修改了原老文件  2.绿色：git已经管理起来）
+2.git add .   ：管理当前文件夹下的所有文件
+3.git commit -m "描述信息" ：生成版本
+4.git init   ： 初始化
+5.gti log   ： 查看之前历史版本
+6.git reflog ：查看之后历史版本
+7.pwd ：查看当前文件的路径
+8.cat 文件名 ：查看文件内容
+9.vim aa.py  ：编辑aa文件
+
+git三大区域：
+1.工作区
+2.暂存区
+3.版本库
+
+
+常识：
+1.分支，master

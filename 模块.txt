@@ -1,0 +1,2 @@
+模块：
+如果使用 import abc来导入模块，那么使用函数时每次都需要输入abc.efg，为方便可以直接导入efg函数，from abc import efg，这样就可以直接使用efg了。

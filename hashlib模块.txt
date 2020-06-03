@@ -1,0 +1,13 @@
+hashlib模块：
+md5加密：可以撞库破解
+import hashlib
+obj=hashlib.md5()
+obj.update("hello".enconde("utf-8"))
+print(obj.hexdigest())========5d41402abc4b2a76b9719d911017c592
+可以这么做进行严格加密：
+md5加上key值加密：obj.hashlib.md5("字符串"，"utf-8")。
+
+obj.update("admin".encode("utf-8"))
+obj.update("hello".encode("utf-8"))
+像上面这样，如果同时有两条加密，那么第二条加密会受第一条的影响，上面第二条等效于obj.update("adminhello".encode("utf-8"))。
+除了这个加密之外还有很多加密方法，例如sha256，调用方法为obj=hashlib.sha3_256()。

@@ -1,0 +1,104 @@
+a.title(),字符串a里面所有的单词首字母大写，其余字母小写
+
+a.capitalize(),字符串里第一个字母大写，其余小写，如果第一个字符不是字母，那么函数只会让后面所有的字母小写。
+
+a.lower()与a.casefold()都是用来将字符串里面的所有大写改为小写，但前者只能改变英语的大小写，而后者功能更强大，
+可以改变除英语外（比如法语）的字母大小写。
+a.upper()与a.lower()功能相似。
+
+a.swapcase()将字符串内的大小写转换，大写变小写，小写变大写。
+
+a.count("a",0,5)计算字符串a里面有多少个“a”，也可以输入“ab”看里面有多少个"ab"，后面的0表示从字符串的第0个
+位置开始找（包括0），一直到第5个位置结束（不包括5）。(0和5可不输入）
+
+a.startswith("a",0,5)如果字符串在第0到第5的位置上是以"a"为开头的，那么返回true，否者返回false。(0和5可不输入）
+a.endswith("a",0,5)如果字符串在第0到第5的位置上是以"a"为结尾的，那么返回true，否者返回false。(0和5可不输入）
+
+a.find("a",0,5)在0和5之间查找字符"a"，默认找到第一个"a"。（可不输入0和5）
+
+上述0和5所表示的区间为[0,5)。
+
+a.format()
+text="I am a good {aa}, age {bb}."
+v=text.format(aa="boy", bb="18")
+v=I am a good boy, age 18.
+该函数做的事称为格式化，即将字符串中的占位符（本例为{aa}）替换为所想要的字符或字符串。
+good=19
+aa="I am a good {0}, age {2}."
+bb=aa.format("boy",good,18,89)
+bb=I am a good boy, age 18.
+当占位符中的字符为数字时，可直接在（）内输入想要的字符串，然后函数会根据占位符中的数字自动对应（）内的内容并赋值。
+也可以在format里面加入字典，但注意要在前面加入**，像这样format（**{"a":"a","ab":"ab"}）。
+（format的更多用法，可看视频第02部分，day14，07）
+a.format_map()
+用法跟format差不多，但format_map的（）内写入的是字典，例如format_map（{"aa":"abc","bb":"abc"}）。
+
+index的功能与find差不多，只是find找不到时返回-1，而index直接报错，工程中多用find。
+
+a.isalnum()判断字符串a里面是否仅是数字或字母，如果有其他字符将返回false，否则返回true。
+a.isalpha()判断字符串是否仅是字母（有数字也返回false，与isalnum不同）。
+a.isdigit()判断字符串是否仅是数字。
+a.isdecimal()判断字符串是否仅是数字（仅可判断十进制数字）
+（上面的isdigit可以判断出更多类型的数据，比如②，而isdecimal不能判断②，即会输出false）
+a.isnumeric()比上面两个都厉害，连中文的”二“也能判断出来。
+（工程中用的比较多的还是isdecimal，因为它仅可以判断十进制的数字）
+
+a.isidentifier()判断字符串是否为可用变量名（可用变量名必须是由字母、数字和下划线组成，且开头必须是字母或下划线）
+
+a.isprintable()判断字符串中是否有不可显示的字符（比如\t、\n，在打印出来之后看不到”\t“、”\n“），没有的话返回true，否则返回false。
+
+a.isspace()判断字符串中是否全部是空格，是的话返回true，否则返回false。（当字符串中一个字符也没有的时候，返回false）
+
+a.istitle()判断字符串中每个单词是否都是大写开头，是的话返回true，否则返回false。
+
+a.islower()判断字符串是否都是小写，是的话返回true，不是的话返回false。
+a.isupper()与上述函数功能相似。
+
+isinstance(["123"],list)判断["123"]是否为list，即判断前面的参数是否是后面规定的类型。
+
+"____".join(text）在字符串text的每个字符之间加入双引号内的内容（比如text=“sdsd”,"2".join(text)="s2d2s2d2"。
+
+a.center(20,"*")把字符串居中显示，比如说字符串总长为6，那么字符串前面和后面都会有7个*，*******123*******，
+如果前面的范围（比如说20）小于字符串的长度，那么输出内容不改变，如果是单数，那么字符串前的*会比字符串后的*多一个。
+a.ljust(50,"b")在字符串的右边填充字符"b",字符串总长度为50，如果字符串的长度大于50，那么输出为原字符串，并不会填充"b"。
+a.rjust(50,"b")在字符串的左边填充字符"b",字符串总长度为50，如果字符串的长度大于50，那么输出为原字符串，并不会填充"b"。
+（注意：上述两个函数都只能填充单个字符）
+a.zfill(50)在字符串的左边填充字符”0“，字符串总长度为50。（一般很少用这个函数，因为上述函数已经完全可以实现这个功能）
+
+a.lstrip()删除字符串左边的空格,\t,\n。当（）内有内容时，默认只删除括号内的内容，且不管顺序，例如（”asd“），a=adsa  sdds, 输出为sdds，
+前面的adsa已被删除，要是内容为（" asd"），那么整个字符串都会被删除掉。
+a.rstrip()删除字符串右边的空格,\t,\n。
+a.strip()删除字符串左右两边的空格,\t,\n。
+
+翻译，加密解密
+str.maketrans(text,text2)，translate
+text="abcdefg"
+text2="1234567"
+text3="bbbbbb"
+m=str.maketrans(text,text2)
+v=text3.translate(m)="222222"
+
+a.partition("c")该函数用于分割字符串，分隔符为"c"
+a="abcdce"
+a.partition("c")=('ab', 'c' ,'dce')
+a.rpartition()默认从右往左进行分割，而partition默认从左往右进行分割。
+（注意：该函数只能找到第一个c进行分割，也就是只能分割成3份，如果c在第一个位置，那么会分割成（"","c","xx")）
+
+a.split("c",2),该函数作用与partition相似，只是split会分割所有的分隔符，且分割之后分隔符会消失。后面的2表示分割两次，形成三个子集。
+默认从左到右进行分割。
+a.rsplit()默认从右往左进行分割。
+分隔符在第一个位置出现:
+text="cacscdc"
+v=text.split("c")
+v=["","a","s","d",""]
+a.splitlines(x),该函数只能根据换行符来进行分割，括号内的x为true或者false，默认为false（即不输入内容），当true时返回的子集会带有换行符，
+而false时不带有换行符。
+text="cacb\ncdc\necfcg"
+v1=text.splitlines(True)
+print(v1)=['cacb\n', 'cdc\n', 'ecfcg']
+
+a.expandtabs(8)函数在字符串中找到\t，比如“aaaa\taaaa",前面有四个a，那么\t占4个空格（即前面的字符加上空格一共占用8个位置），输出为aaaa    aaaa。
+
+a.replace("abc","nn",5)该函数表示将字符串a里面前5个"abc"替换成"nn"，如果不填后面的数字，那么默认替换全部的“abc”。
+
+len(string)，查看字符串长度

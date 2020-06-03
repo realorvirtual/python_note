@@ -1,0 +1,36 @@
+logging模块：
+
+import logging
+logging.debug("debug message")==========一级
+logging.info("info message")=============二级
+logging.warning("warning message")========三级
+logging.error("error message")============四级
+logging.critical("critical message")==========五级
+（打印的时候只会打印大于或等于设定级别的信息，不设定的话默认为第三级别，即warning级，此时打印，只会显示三条信息，即warning，error，critical）
+
+调级方法：
+logging.basicConfig(level=logging.DEBUG)========调级为第一级，此时打印将会把五条信息全部打印出来。
+生成文本：
+logging.basicConfig(filename="logger.log")========生成文本logger.log，并且会把信息存入文本当中，当你再次执行函数时，新的信息会被追加到上一次文本的末尾。
+logging.basicConfig(filename="logger.log"，filemode="w")此时生成新的文本，重复执行函数时，旧的信息会被新的信息替代。
+格式化：
+logging.basicConfig(format="%(变量名称)s")，format函数会单独作用于每一级的信息。格式为%()s。
+%（asctime）s ========代码执行到打印某一级信息时的当地时间。
+%（lineno）d（s也行）========某一级信息的行号，例如它可以打印出logging.error在代码的哪一行。
+%（message）s ========打印出每级的信息（logging.debug("也就是这个信息")
+%（filename）s ========文件名（执行函数的文件，即代码所在的文件）
+%（levelno）s========数字形式的日志级别
+%（levelname）s========文本形式的日志级别
+%（pathname）s========调用日志输出函数的模块的完整路径名，可能没有
+%（filename）s========调用日志输出函数的模块的文件名
+%（module）s========调用日志输出函数的模块名
+%（funcName）s========调用日志输出函数的函数名
+%（created）f========当前时间，用UNIX标准表示时间的浮点数表示
+%（relativeCreated）s========输出日志信息时的，自Logger创建以来的
+%（thread）s========线程ID，可能没有
+%（threadName）s========线程名，可能没有
+%（process）s========进程ID，可能没有
+
+
+
+

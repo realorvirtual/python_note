@@ -1,0 +1,54 @@
+os，sys模块：
+import sys,os
+__file__==执行代码的文件路径。（找到的是当前文件的文件名，但在pycharm中，它会显示文件的路径，用cmd/python执行时显示的是文件名，所以使用时不太方便）
+一般用这个找文件的绝对路径：os.path.abspath(__file__)。
+往系统里面添加环境变量（临时，非永久性添加）：sys.path.append(文件路径)。
+
+os模块是与系统交互的一个接口。
+os.getcwd()当前文件所在的目录，非执行文件。
+os.chdir("目录名")将当前脚本工作目录变为目录名对应的目录。（“..”）这样填表示返回上一层目录，chdir的功能相当于shell下cd。
+os.curdir 返回当前目录。
+os.pardir获取当前目录的父目录字符串名。
+os.makedirs("文件名/文件名")在当前目录下面创建文件，可生成多个文件。
+os.mkdir("文件名")生成单级目录。
+os.removedirs("文件名")删除单级目录，如果上一级目录也为空则继续删除，一直递归。（只删除空文件）
+os.rmdir("文件名")删除单级目录，若目录不为空则无法删除，报错，相当于shell中rmdir dirname。
+os.listdir("文件名")列出指定目录下的所有文件和子目录，包括隐藏文件，呈现形式为列表。
+os.remove("文件名")直接删除文件，不是目录哦。（删除目录的话会报错，报告拒绝访问）
+os.stat("文件名")列出文件的一系列信息，比如何时创建（st_ctime创建时间），何时修改过文件（st_mtime上次修改的时间），何时保存（st_atime），文件大小（st_size）等。使用方法：os.stat("绝对路径").st_size。
+os.path.split(path)将path分割成目录和文件名并组成一个tuple返回，比如“c:\a\b\c.py”===("c:\a\b","c.py")。
+os.path.dirname(path)返回当前文件的目录，相当于split的第一个元素。
+os.path.basename(path)返回当前文件的文件名，相当于split的第二个元素。
+os.path.exists(path)如果path存在，返回True，否则返回False。
+os.path.isabs(path)判断是否为绝对路径。
+os.path.isfile(path)判断path是否为一个文件（文件不是目录哦）。
+os.path.isdir(path)判断path是否为一个目录。
+os.path.join(x,y)将路径x和y拼接起来。
+os.path.getatime(path)返回path所对应的文件或者目录最后保存的时间。
+os.path.getmtime(path)返回path所对应的文件或者目录最后修改的时间。
+os.sep输出操作系统特定的路径分隔符，win为\\，Linux为/
+os.linesep输出当前平台使用的行终止符，win为\t\n，Linux为\n
+os.pathsep输出用于分割文件路径的字符串，win为;，Linux为：
+os.rename("oldname","newname")重命名文件/目录。注意：该操作基于当前操作目录，且里面的参数可以填写路径。
+os.getpid()返回当前进程的进程号。
+os.getppid()返回当前进程的父进程号。
+sys模块：
+sys.exit(0)正常退出程序。
+sys.version获取python解释程序的版本信息。
+sys.path返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值。
+sys.paltform返回操作系统平台名称。
+sys.stdout.wirte("#")可以用这个来做进度条，例如使用for循环打印10个#，跟print不同的是，每次print完成之后会换行，而这个不会，它会紧接着打印出来，并且在同一行显示。
+sys.stdout.wirte("\r#")在前面加上\r，表示将光标放在行头。因此可以做成进度条，一般形式sys.stdout.write("\r%s%% %s"%(x,"<"*x))
+如果将f=open("路径","w")复制给sys.stdout，即sys.stdout=f，那么调用print("内容")时，会把print中输入的内容写入到文件当中。
+json模块：
+json可以处理很多语言的很多数据类型，相当于各种据类型的规范。
+json.dumps(数据，比如说字典)==“数据”，相当于执行了str（数据）。
+json.loads(数据，该数据为字符串)==将字符串数据转换回原数据。
+
+在文件处理时可以使用dump，load：
+json.dump(数据，变量)，例如json.dump("hello",f)，相当于执行了f.write（json.dump("hello")）。
+data=json.loads(f.read())这句话就可以用load来简化，data=json.load(f)。
+
+pickle模块：
+pickle.dumps，pickle.loads这两个函数跟json功能上是相似的，只不过pickle会把数据转换为二进制，而json将数据转换为字符串。
+

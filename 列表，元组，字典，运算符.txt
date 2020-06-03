@@ -1,0 +1,155 @@
+运算符
+运算符： + - * /
+%取余
+//取整        9%2=1  9//2=4   实际上取整的数乘以2再加上取余的数就等于9
+ 
+字符串 name=“哈哦耶” 哈哦耶是一个字符串，哈是一个字符，哈哦，哦耶是一个子字符串，注意：哈耶不是一个子字符串，子字符串必须是连续的。
+可用以下方法判断某字符或子字符串是否在一个字符串里面：
+if “哈哦” in “哈哦耶”：
+     print （“ok”）
+也可以用 if not in
+
+in，not in 也称为成员操作
+
+列表：list
+list=["sdsd"]且可以为u先嵌套，即列表中嵌套列表list=["sdsds","cscscs",["cscs","scsc"],"ppp"]。
+且列表集合里面可以放置任何东西。
+列表同样可以使用索引以及切片。
+列表可以相加，list1+list2
+del list[0]删除列表第一个元素。
+
+
+元组，tuple：
+元组中元素不能被修改，不能增加或者删除。
+写元组的元素的时候在后边最好加上一个逗号（不会报错），易于区别自己写的是元组。
+text=(["122"])，系统把这个认为是列表，如果在后面加个逗号，即text=(["122"],),那么系统会把这个当成是元组。
+元组可以使用索引，用法跟list一样。
+元组可以转换成列表，列表也可以转换成元组。
+元组也可以使用join函数，join会把元组里的元素（不能有列表、数字等，必须是字符串）加起来形成一个字符串。
+元组和列表都是有序的。
+元组的一级元素不可修改，但二级元素可以被修改，比如元组里面的列表里面的元素，像(122,133,["123"],123)里面的["123"]里面的"123"就可以被修改。
+tuple.count("abc")获取元组中某元素的个数。
+tuple.index("abc")获取元组中某元素的位置。
+
+字符串str转列表list:
+s="sdsd"
+s1=list(s)
+s1=["s","d","s","d"]
+
+列表也可以使用join函数:
+text=['scscs','scsc','www']
+v="".join(text)
+v=scscsscscwww       type(v)=str
+v1="2".join(text)
+v1=scscs2scsc2www
+（注意join函数只能对列表内的字符串使用，如果列表中包含其他列表或者数字，函数会报错）
+
+text.append("888")函数在列表末尾加入字符串888.（注意，该函数不能这样用v=text.append("888"),这样的话返回的v值为none）
+text.extend([123])函数会在列表末尾加入数字123，该函数与append的区别在于，extend传入的必须是可迭代的对象，即字符串、列表等，
+且extend是将代入的字符串分割成单个字符，将代入的列表分割成一个个的字符串，而append是整体代入，即你输入什么就代入什么。
+text=['scscs','scsc','www']
+text.append(["sc"])
+text.extend(["csc","999"])
+text.extend("123")
+print(text)
+输出为['scscs', 'scsc', 'www', ['sc'], 'csc', '999'，‘1’，‘2’，‘3’]
+
+locals：传回一个字典，里面是自己定义的一些局部变量。
+def text():
+    msg="哈哈哈"
+    print(locals())
+text()=={'msg': '哈哈哈'}
+
+globals：
+print（globals（））会打印出一个字典，里面包含了系统默认给出的一些变量，以及自己定义的一些全局变量。
+
+vars（）：
+如果不传入参数，那么用法跟globals和locals一样，有局部变量时（比如说在定义函数时）打印局部变量（字典），否则打印全局变量。
+如果有一个参数（函数名，比如int，help等），那么就会返回一个字典，里面存放着这个函数的所有方法。
+
+注意：这个符号object.__dict__的意思是查看对象的所有方法，并以字典的方式返回。
+
+text.clear()函数会清空列表中的所有元素。
+
+text3=text2.copy()函数将复制text2到text3中（尝试过直接使用text3=text也可以执行这个功能，但还不清楚其他功能是否会发生变化，该函数也称为浅拷贝）
+
+text.count("22")该函数跟str.count("22")类似，即计算列表中有多少个"22"。
+
+text.index("ss",0,1)该函数索引出字符串"ss"的位置，后面两个参数可不填，表示的是索引的起始和终止位置。
+
+text.insert(8,"66")该函数在列表的第8个位置插入内容"66"。（加入列表有十二个元素，你插入的位置为15，那么将在列表的最后一个位置插入内容）
+
+text.pop(0)删除列表中第0个位置的元素。
+该函数还可以这么用：
+v=text.pop(0)
+执行上述操作后，不但text.pop(0)执行了，还可以获取到被删除的值，即text[0]，并且存储在v中。
+
+text.remove("ss")删除掉字符串中的"ss"，且默认从左边开始，删除第一个"ss"。
+也可以使用del text[1]的方法来删除列表中的元素。
+
+text.reverse()函数将列表中的所有元素的位置反转，例如最后一个位置的元素提到最前面，第二个位置的元素调到倒数第二个位置。
+
+text.sort()将列表中的字符串进行从小打到大的排序，如果列表中同时出现字符串和数字，那么会报错，因为无法比较大小。在括号（）内填入
+reverse=True将会反转排序，即从大到小排序。
+
+字典的创建：xxx={“abc”：“123”，“ccc”：“234”}，里面有两个键值对。（key是abc，value是123）
+字典里的value可以是任何值，像这样info={"k1":18,"k2":"abc","k3":True,"k4":(123),"k5":["ppp"]}
+字典是无序的，元组和列表是有序的。因此字典不能用info[0]来索引出元素。
+字典索引元素的方法为info["key"]。
+字典的key值不能是列表。
+del info[key]删除字典里面的key以及key对应的元素。
+
+字典也可以使用for循环
+for x in info:
+    print(x)
+输出为字典info里面所有的key
+当我们想要输出字典里面的value时
+for x in info.values():
+    print(x)
+输出即为字典info里面的value值。
+当然也可以用for x in info.keys():，输出为字典里面所有的key值。
+如果想同时输出key和value，可以这么做for x in info.keys():
+                                                              print(x,info[x])
+当然也可以用python自带的函数这么写：
+for v,k in info.items()
+    print(v,k)
+
+也可以这么创建字典：
+v=dict.fromkeys(iterable，value)，前面的参数填上可迭代的对象，后面的参数填值。
+
+
+v=directory.pop("key")函数将删除directory里面的key以及key对应的value，且将删除的值（value）存储在v中。
+v=directory.pop("key",100)函数将删除directory里面的key以及对应的value，如果directory里面没有”key“，那么存储的值为100，如果
+directory里面有”key“，那么存储的值为key对应的value值。
+v=directory.popitem()函数将自动随机删除directory里面的一个值（实际上，实验了这么多次，发现删除的都是字典最后一个值，即我们输入
+directory里面的最后一个值。）。
+v=directory.setdefault(key,value)函数将在directory里面加入一对key：value，返回的v值为value，但如果key存在，那么就不会添加，返回
+的v值为原先存在的key对应的value值。
+directory.update({"a":123,"b":456})函数将根据传入的参数（字典）进行更新，如果传入的字典里面有directory里面没有的，那么就会给
+directory加进去，如果存在有相同key，那么会根据新的value值对directory进行更新。
+
+directory.keys()可以把key值组成一个列表。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

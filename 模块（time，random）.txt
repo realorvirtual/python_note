@@ -1,0 +1,33 @@
+模块：如果模块有多个包层级，可以这样导入
+from a.b.c.d import f
+
+if __name__=="__main__":   该代码的作用是使本if语句下面的函数只能在本py文件下面执行，也就是说，如果该文件被调用了，if语句下面的函数也不会被执行。
+原因是，在本文件中（即if语句的文件），__name__=="main"，而在调用本文件的其他文件里，__name__==路径（被调用文件的路径）。
+
+time模块：
+time.time()记录1970年0时0分到该函数执行完成的时间，用秒来记录。
+time.localtime()当地时间。可通过.tm_year来获取年份，具体可先打印出localtime然后根据显示的内容调出你需要的时间。
+localtime(123456)还可以在括号里面填入参数，本例计算的是距1970年123456秒的时间。
+time.gmtime()世界标准时间，格林尼治时间。
+
+time.mktime(结构化时间)将结构化时间转换为时间戳。
+结构化时间就是像localtime这样的一系列时间，而时间戳就是像time.time()这样的秒数。
+
+time.strftime("%Y-%m-%d %X"，time.localtime())将结构化时间转化为字符串时间，%Y表示年，%m表示月，%d表示日。
+time.strptime("x:y:z","%Y:%m:%d")将字符串时间转换为结构化时间。
+
+time.asctime()当地时间，这个函数看时间比较方便，不是结构化时间。-------格式：Wed Dec 11 16:05:42 2019
+time.ctime()
+
+datetime模块：
+datetime.datetime.now()-------格式：2019-12-11 16:05:42.179680
+
+
+random模块：
+random.random()随机出现一个(0,1)浮点数。
+random.randint(x,y)随机选取一个范围在[x,y]的整数。
+random.randrange(x,y)随机选取一个范围在[x,y)的数。
+random.choice([x,y,z])随机选取一个列表里面的值。
+random.sample([x,y,z],h)在列表里面选取h个值然后组成一个新的列表返回。
+random.uniform(x,y)随机选取一个在[x,y]范围内的浮点数。
+random.shuffle([x,y,z])将列表的元素顺序打乱。

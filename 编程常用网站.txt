@@ -1,0 +1,6 @@
+stack overflow--------遇到bug可以去查找（英文）
+leet code--------数据结构和算法（中文）
+segmentfault思否-------解决bug（中文）
+GitHub----------源码素材（英文）
+gitee--------源码素材（中文）
+coding------源码素材（中文）

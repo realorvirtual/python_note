@@ -1,0 +1,148 @@
+多线程 threading
+
+创建子线程：
+import threading
+（主线程按照流程运行，当主线程即将结束时，会检验子线程是否已经完成，如果子线程没完成，主线程就会等待子线程完成后再结束）
+实例化对象:
+t1=threading.Thread(target=需要执行的函数名字,args=函数需要的参数)  （注意：args=  后面的参数必须是可迭代对象，如果说参数是一个数字的话，可以这么写（1，），本例的集合是一个可迭代对象，无参数的话不需要输入后面那段）
+启动:
+t1.start()
+等待：
+t1.join()该函数下面的主线程必须等t1运行完成后才能运行。
+
+守护进程：setDaemon(True) 函数表示，一旦主线程结束以后，子线程也跟着结束。（注意：setDaemon一定要设置在start()之前。）
+t1.setDaemon(True) 把t1设成守护进程
+
+Thread实例对象的方法
+  # isAlive(): 返回线程是否活动的。
+  # getName(): 返回线程名。
+  # setName(): 设置线程名。
+
+threading模块提供的一些方法：
+  # threading.currentThread(): 返回当前的线程变量。
+  # threading.enumerate(): 返回一个包含正在运行的线程的list。正在运行指线程启动后、结束前，不包括启动前和终止后的线程。
+  # threading.activeCount(): 返回正在运行的线程数量，与len(threading.enumerate())有相同的结果。
+
+继承式调用： （继承式创建子线程）
+from threading import *
+class Mythread（Thread）：
+    def __init__(self):
+        Thread.__init__(self)         # 把Thread的属性继承过来。
+    def run(self):                       # 重写run方法，在继承Thread属性时，会把self.run()继承过来，一旦Mythread实例化，且start后，run函数便会在子线程内运行。
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+线程队列：一种数据结构  先进先出  FIFO
+import queue
+q=queue.Queue()      -----创建队列
+
+q.put(12)                   -----放入数据
+q.put("hello")
+q.put({"name":"yuan"})
+
+data1=q.get()              -----取出数据  12
+data2=q.get()                                    hello
+data3=q.get()                                    {"name":"yuan"}
+
+加参数情况：
+q=queue.Queue(5)  ------最多put5个参数，如果put第6个参数，那么主函数便会卡住，直到get取出一个值，主函数才能继续运行。
+q.put("hello",False)  ------后面的参数False表示，如果q的参数已满，put不进去了，那么函数就会报错，而不是继续等待put。
+q.get(block=False)  -------如果队列为空，get不到数据的话函数便会报错。
+
+
+先进后出：
+import queue
+q=queue.LifoQueue()
+
+
+优先级：  [数字，数据]   ------数字越小，越优先get数据，get出来的数据是一个列表，跟put进去的内容一样，可以通过索引的方式取出数据，即data=q.get()[1]。
+q=queue.PriorityQueue()
+q.put([3,12])
+q.put([2,"hello"])
+q.put([4,{"nmae":"yuan"}])
+本例get出来的数据及顺序是：[2,"hello"]，[3,12]，[4,{"nmae":"yuan"}]
+
+
+其他调用函数：
+q.qsize()          ------q里面有多少个数据。
+q.empty()        ------q是否为空，是的话True，不为空False。
+q.full()             ------q是否为满。
+q.get_nowait() 相当q.get(False)。
+非阻塞 q.put(item) 写入队列，timeout等待时间。
+q.put_nowait(item) 相当q.put(item, False)。
+q.task_done() 在完成一项工作之后，q.task_done() 函数向任务已经完成的队列发送一个信号，只有收到这个信号后，join阻塞才会疏通。
+q.join() 实际上意味着等到队列为空，再往下执行操作。
+（task_done之前必须有put操作，也就是往队列里放入数据，这时候join不为空，join将阻塞，即使get出数据，join依然阻塞，只有执行q.task_done()之后，join才能疏通阻塞）
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+多进程 multiprocessing
+
+创建子进程：
+from multiprocessing import Process
+构造：
+Process([group [, target [, name [, args [, kwargs]]]]])
+　　group: 线程组，目前还没有实现，库引用中提示必须是None； 
+　　target: 要执行的方法； 
+　　name: 进程名； 
+　　args/kwargs: 要传入方法的参数。
+一般用的都是P1=Process(target=函数名，args/kwargs=参数)
+
+实例方法：
+　　is_alive()：返回进程是否在运行。
+　　join([timeout])：阻塞当前上下文环境的进程程，直到调用此方法的进程终止或到达指定的timeout（可选参数）。
+　　start()：进程准备就绪，等待CPU调度
+　　run()：strat()调用run方法，如果实例进程时未制定传入target，这star执行t默认run()方法。
+　　terminate()：不管任务是否完成，立即停止工作进程
+
+属性：
+　　daemon：和线程的setDeamon功能一样  ------创建daemon的方法 P.daemon=True
+　　name：进程名字。
+　　pid：进程号。
+
+------------------------------------------------------------------------------------------------------------------------------------------
+进程队列 multiprocessing.Queue()
+
+q=multiprocessing.Queue()
+
+--------------------------------------------------------------------------------------
+进程间的通信
+
+管道  ------双向管道（可收发消息，类似于socket里面的conn）
+from multiprocessing import Pipe
+parent_conn，child_conn=Pipe() #这是两个双向管道，父级管道，子级管道
+
+parent_conn.send("信息")   ------发消息
+response=conn.recv()        ------收消息
+conn.close()                       ------关闭管道
+
+--------------------------------------------------------------------------------------
+Manager 资源共享
+
+with Manager() as manager:   ------用这种方法的话，下面就不用执行 close() 操作了，类似于with open("a","a") as b，即打开文件操作。
+    d=manager.dict()      ------创建一个字典
+    l=manager.list()        ------创建一个列表
+（用这种方法创建的字典以及列表在进程间共享，即各个进程可以共同修改这些资源）
+
+--------------------------------------------------------------------------------------
+进程同步  同步锁Lock
+
+from multiprocessing import Lock
+lock=Lock()   ------创建进程锁
+lock.acquire() ------获得锁
+lock.release()  ------释放锁
+（虽然进程间的内存等资源是独立的，但进程锁仍能影响全部进程，效果类似于线程锁）
+
+--------------------------------------------------------------------------------------
+进程池 apply---阻塞，同步方法      apply_async---异步方法
+
+from multiprocessing import Pool
+pool=Pool(5)   ------进程池内进程数为5。
+
+for i in range(100):
+      pool.apply_async(func=函数名1，args=参数，callback=函数名2)   ------用5个进程同时去跑函数1，如果不用进程池，需要for循环100次，但使用进程池后，只需跑20次即可。
+	（callback，每次执行完函数1就会自动执行函数2，可以用来做日志，且函数1是在子进程内进行的，而函数2是在主进程内完成的）
+进程池内部维护一个进程序列，当使用时，则去进程池中获取一个进程，如果进程池序列中没有可供使用的进进程，那么程序就会等待，直到进程池中有可用进程为止。
+
+--------------------------------------------------------------------------------------
+协程 ------yield，协作式，非抢占式的程序，用户切换式（本质上就是一个线程）
+协程的优势：1.没有切换的消耗，因为就一个线程   2.没有锁的概念，因为协程的方式不是抢占式
+解决并发的一个很好的方式：协程加进程

@@ -1,0 +1,52 @@
+在内存里面（id）：
+字符串、列表、元组、字典都会改变内存位置，每执行一次print都会改变。
+而数字不会改变。
+
+集合：1.不同元素组成  2.无序  3.集合中的元素类型是不可变类型。
+集合set={1，2，3},当set={1,2,2,3}时，默认set={1，2，3}
+也可以直接这么创建集合：
+s=set（“hello”）
+print（s）=={“h”，“e”，“l”，“e”}
+当用这种方法创建集合时可以往set（）里面放入列表、元组以及字典等（传入字典时只传入key值）。
+
+set.pop()随即删除元素。
+set.remone("ppp")删除指定元素，但不存在指定元素时会报错。
+set.discard("ppp")删除指定元素，即使不存在指定元素时也不会报错。
+
+s1.intersection(s2)交集，或者写成  s$s2，二者的共有部分。
+s1.(union(s2))并集，或者写成  s|s2，将二者相加起来。
+s1.difference(s2)差集，或者写成  s1-s2，s1减去二者的共有部分。
+s1.symetric_difference(s2)交叉补集，或者写成  s1^s2，s1加上s2然后减去他们的共有部分。
+
+s1.diierence_update(s2),相当于执行了s1=s1-s2的操作。后续集合函数中有_update也类似。
+
+s1.isdisjoint(s2)是否不相交，是的话返回true，有相交的话返回false。（disjoin不相交）
+s1.issubset(s2)s1是s2的子集吗，是的话返回true，否者返回false。
+s1.issuperset(s2)s1是s2的父级吗，是的话返回true，否则返回false。
+
+s1.update(s2),将s2加入到s1里面。
+
+s=frozense("hello")用该方法创建的集合为不可变集合。
+
+如果想简单地去重，可以使用这种方法：
+name=["alex","alex"]
+s=set(name)因为set里面不可以有相同地元素，所以会把重复的参数去除掉。
+name=list(s)然后把集合转换回列表。
+或者直接写成这样：name=list(set(name))
+但是上面两种方法都会改变列表里面元素的顺序，如果不考虑顺序的话可以这么做。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1224 @@
+web框架，djongo：
+（https://www.cnblogs.com/yuanchenqi/articles/6083427.html）
+
+# 导入服务器
+from wsgiref.simple_server import make_server
+# 定义一个函数application，当有网站链接进来的时候执行该函数
+def application(environ,start_response):
+    # environ是一个包含了所有HTTP请求信息的dict对象
+    print(environ["PATH_INFO"]) # 取出字典里面的参数path_info，该参数对应的是网站地址后面的信息
+    # start_response是返回给用户的相应头，第一个参数是状态码，第二个参数是一个列表，里面的各个元组都是一对键值对，注意：每个响应头只发送一次，也就是说start_response函数只执行一次
+    start_response("200 ok",[("Content-Type","text/html/xml/ppp"),("kk","pp")])
+    # 返回一个列表给用户，里面的信息就是我们看到的网页信息，也就是body，响应体
+    return [b"<h1>hello</h1>"]
+# 创建服务器对象httpd，参数为地址，端口，执行函数，如不填地址，默认为本机地址，也就是127.0.0.1
+httpd=make_server("127.0.0.1",8080,application)
+print("Serving HTTP on port 8080...")
+# 开启服务器
+httpd.serve_forever()
+
+HTTP返回的字典environ中各键值对对应存储的数据：
+“QUERY_STRING”: "user=aa&pwd=bb"，username与password存储的位置。
+“PATH_INFO”：“网站地址后面的信息”
+
+
+
+
+=======================django的流程和命令行工具=======================
+django
+    #安装： pip3 install django
+
+          添加环境变量
+
+    #1  创建project
+       django-admin startproject mysite
+
+       ---mysite
+
+          ---settings.py
+          ---url.py
+          ---wsgi.py
+
+       ---- manage.py(启动文件)  
+
+    #2  创建APP       
+       python mannage.py startapp  app01
+
+    #3  settings配置（静态文件配置）
+
+       STATIC_URL = '/static/' 
+
+       STATICFILES_DIRS=(
+            os.path.join(BASE_DIR,"statics"),
+        )
+（STATICFILES_DIRS里面的路径可以用STATIC_URL去代替，比如说你在html文件里要导入C:\\aa\bb.jpg，你会写src="C:\\aa\bb.jpg",假设这个时候STATICFILES_DIRS=C:\\aa，那么你可以这样写src="/static/bb.jpg"）
+（除了上述的导入文件方法外，还可以这样配置静态文件，在html任意处（一般在head标签对里面）加上{% load staticfiles %}，这样做相当于导入了路径STATICFILES_DIRS，也就是你的静态文件static的路径，当你需要添加照片等静态文件时，可以这样写{% static %}）
+       
+     
+    #5  使用模版
+       render(req,"index.html")   ----------------------所有模板也就是html文件都放在template文件夹下面
+
+    #6  启动项目
+       python manage.py runserver  127.0.0.1:8090
+
+    #7  连接数据库，操作数据
+       model.py
+
+
+============================问题解决============================
+1.无法发送照片：
+创建一个跟templates同层的目录static，然后在settings.py里面加入
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+（主要原因就是html文件与照片不是绑在一起发送过去的，html文件发送过去后，照片等静态文件才会发送过去，两者还需对应起来，因此需要单独管理这些静态文件）
+
+2.修改ip地址后无法访问网站：
+找到settings.py里面的ALLOWED_HOSTS=["*"]---------括号里面加入"*"
+
+3.path无法使用正则表达式：
+django2.0版本还有的path为绝对匹配，需要正则匹配时导入模块 from django.urls import re_path，使用re_path就可以使用正则表达式了。
+
+在正则表达式里，( )代表分组，括号里面的数据一定作为参数，也就是说views里面相对应的函数一定要写参数。当你使用(?P<name>规则)时，对应的分组为命名参数，views里面传入参数时一定要将参数名命名为括号里面的name。
+例如：re_path( 'show_time/ (?P<b>[0-9])/ (?P<a>\w) ,views.show_time )--------------------分组第一个参数为b，第二个参数为a
+那么在views对应的函数show_time里一定要有两个传入参数a，b--------------------------------def show_time(req,a,b):
+
+4.怎么取出form表单返回的数据（相关函数）：
+get方式提交的数据：form表单返回的数据存储在你定义的函数的参数req里面，例如，def register(req):，返回的数据就在req里面，req.GET是一个字典，可以通过req.GET.get(key)来获取你想要的信息，也可以直获取整个字典。
+post方式提交的数据：借鉴get方式，返回的字典为 req.POST，取值方式为 req.POST.get(key)。
+req.method---------找到数据提交方式（也就是用户访问服务器的方式）
+注意一个常用方法：request.POST.getlist('')---------通常使用get获取的都是一个数据，只有getlist才能获取到完整的数据。
+
+5.引用路由地址
+<form action="/register/" method="post"> 与 <form action="http://127.0.0.1:8000/register/" method="post">效果是一样的，当你不写前面的地址的时候，系统会默认把上一次的前面的地址拿过来用。
+但这个不能固定，一旦这个路径写固定了，我在urlpath那里改一下名字，比如说registers，这个路径就用不了了，一般这个位置用别名，例如：<form action="{% url   别名(假设是tag) %}" method="post">，然后在urls文件里，re_path('register/',views.register，name=“tag”)。
+（这样我每次修改re_path里面的register的时候，就不必要再去修改html文件里的register，因为此时html里面的register用的是别名tag，它与re_path里面的register是相通的）
+
+6.html与函数变量间的替换：
+可以在html里面设置{{ time }}，然后在定义函数的时候创建一个变量t，最后返回的时候告诉render用t去替换time，return render(req,"haha.html",{"time":t})。
+（如果参数为多个的话，可以在字典{ }里面加入多个键值对，但是如果变量太多的话，可以这样写，return render(req,"haha.html",locals())，这样的话你定义的变量就会自动与html文件里面的同名变量替换。)
+（ps：return HttpResponse（字符串），返回给页面的是字符串）
+（{"action":list}-----当传进去的参数为列表时，在html文件里面也可以使用 . 来访问，例如：{{ action.1 }}-----来访问action里面的第一个元素，而不是通过索引 [1] 来访问；如果是字典的话，可以这样访问{{ action.name }}，name为键，也就是通过 .key 的方式访问字典；当然 . 的用处还有很多，比如还可用来访问传入对象的属性等等）
+
+7.文件引入：
+（STATICFILES_DIRS里面的路径可以用STATIC_URL去代替，比如说你在html文件里要导入C:\\aa\bb.jpg，你会写src="C:\\aa\bb.jpg",假设这个时候STATICFILES_DIRS=C:\\aa，那么你可以这样写src="/static/bb.jpg"）
+（除了上述的导入文件方法外，还可以这样配置静态文件，在html任意处（一般在head标签对里面）加上{% load staticfiles %}，这样做相当于导入了路径STATICFILES_DIRS，也就是你的静态文件static的路径，当你需要添加照片等静态文件时，可以这样写src=" {% static "filename" %} "）
+
+8.分发：
+导入模块：from django.urls import re_path,include
+例如将所有以blog开头的url全部分发到blog应用里面：path("^blog/",include("blog.urls"))-----------(意思是所有以blog开头的url都会去blog文件夹下的urls文件里面找，当然，第一步会先到总项目urls文件里面找，然后再到分项目blog里面找)
+
+第一步，创建一个属于blog自己的urls文件urls.py（一个大的应用分很多小块，blog博客是其中之一，还有支付系统，播放系统之类的）
+第二步，在总项目urls文件里写上re_path("^blog/",include("blog.urls"))
+（一旦有以blog开头的连接进来，django会将该连接交给blog文件夹下面的urls文件处理，注意，blog.urls里面的连接就不必要再写上blog了，比如连进来的连接是 blog/haha/qq，那么blog.urls里面的连接这样写re_path("haha/qq/, views.function)"，这是因为blog只作为刚开始的分发）
+ 
+
+
+==========================HttpRequest（函数参数里面的那个req，def register（req）：）函数属性与方法==========================  
+# path：       请求页面的全路径，不包括域名
+#
+# method：     请求中使用的HTTP方法的字符串表示。全大写表示。例如
+#
+#                    if  req.method=="GET":
+#
+#                              do_something()
+#
+#                    elseif req.method=="POST":
+#
+#                              do_something_else()
+#
+# GET:         包含所有HTTP GET参数的类字典对象
+#
+# POST：       包含所有HTTP POST参数的类字典对象
+#
+#              服务器收到空的POST请求的情况也是可能发生的，也就是说，表单form通过
+#              HTTP POST方法提交请求，但是表单中可能没有数据，因此不能使用
+#              if req.POST来判断是否使用了HTTP POST 方法；应该使用  if req.method=="POST"
+#
+#
+#
+# COOKIES:     包含所有cookies的标准Python字典对象；keys和values都是字符串。
+#
+# FILES：      包含所有上传文件的类字典对象；FILES中的每一个Key都是<input type="file" name="" />标签中                     name属性的值，FILES中的每一个value同时也是一个标准的python字典对象，包含下面三个Keys：
+#
+#             filename：      上传文件名，用字符串表示
+#             content_type:   上传文件的Content Type
+#             content：       上传文件的原始内容
+#
+#
+# user：       是一个django.contrib.auth.models.User对象，代表当前登陆的用户。如果访问用户当前
+#              没有登陆，user将被初始化为django.contrib.auth.models.AnonymousUser的实例。你
+#              可以通过user的is_authenticated()方法来辨别用户是否登陆：
+#              if req.user.is_authenticated();只有激活Django中的AuthenticationMiddleware
+#              时该属性才可用
+#
+# session：    唯一可读写的属性，代表当前会话的字典对象；自己有激活Django中的session支持时该属性才可用。
+
+#方法
+get_full_path(),   比如：http://127.0.0.1:8000/index33/?name=123 ,req.get_full_path()得到的结果就是/index33/?name=123
+req.path:/index33
+
+注意一个常用方法：request.POST.getlist('')
+
+==============================HttpResponse对象=================================
+
+对于HttpRequest对象来说，是由django自动创建的，但是，HttpResponse对象就必须我们自己创建。每个view请求处理方法必须返回一个HttpResponse对象。
+
+HttpResponse类在django.http.HttpResponse
+
+在HttpResponse对象上扩展的常用方法：
+
+页面渲染：         render()（推荐）               render_to_response(),
+页面跳转：         redirect("路径")--------（比如跳转到百度：路径为http://www.baidu.com；当然可以跳转到另一个url下，比如你写上"/login/"，他就会先到总项目文件的urls文件里面找到有login路径的函数，比如说re_path（"login/"，views.login），注意，redirect与re_path里面的路径必须完全匹配才能执行成功。）
+
+ret=HttpResponse("这是响应体")
+ret["h1"]="v1"--------这是响应头的一部分
+ret.set_cookie("c1","v2")
+return ret
+	头：
+	    h1=v1
+	    cookies: c1=v2
+	体：
+	    这是响应体
+
+
+
+locals()：    可以直接将函数中所有的变量传给模板
+补充：
+
+
+复制代码
+-----------------------------------url.py
+
+ url(r"login",   views.login),
+ url(r"yuan_back",   views.yuan_back),
+
+-----------------------------------views.py
+def login(req):
+    if req.method=="POST":
+        if 1:
+            # return redirect("/yuan_back/")
+            name="yuanhao"
+
+            return render(req,"my backend.html",locals())
+
+    return render(req,"login.html",locals())
+
+
+def yuan_back(req):
+
+    name="苑昊"
+
+    return render(req,"my backend.html",locals())
+
+-----------------------------------login.html
+
+<form action="/login/" method="post">
+    <p>姓名<input type="text" name="username"></p>
+    <p>性别<input type="text" name="sex"></p>
+    <p>邮箱<input type="text" name="email"></p>
+    <p><input type="submit" value="submit"></p>
+</form>
+-----------------------------------my backend.html
+<h1>用户{{ name }}你好</h1>
+
+#总结: render和redirect的区别:
+#   1 if render的页面需要模板语言渲染,需要将数据库的数据加载到html,那么所有的这一部分
+#     除了写在yuan_back的视图函数中,必须还要写在login中,代码重复,没有解耦.
+
+#   2 the most important: url没有跳转到/yuan_back/,而是还在/login/,所以当刷新后
+#     又得重新登录.
+
+
+
+==============================模板语法============================
+模板组成：html代码与逻辑控制代码
+
+逻辑控制代码的组成：
+1. 变量（使用大括号来引用变量）：{{ var_name }}
+
+template与context对象：有逻辑控制代码的html文件即template；render（“html”，{{“time”：time  }} ）里面大括号的内容即context。
+
+=====================Template和Context对象（使用命令行创建模板，然后替换参数）===================
+>>> python manange.py shell  (进入该django项目的环境)
+>>> from django.template import Context, Template
+>>> t = Template('My name is {{ name }}.')---------创建模板t
+>>> c = Context({'name': 'Stephane'})--------------创建上下文
+>>> t.render(c)---------------------------------------变量替换，然后输出结果
+'My name is Stephane.'
+
+
+# 同一模板，多个上下文，一旦有了模板对象，你就可以通过它渲染多个context，无论何时我们都可以
+# 像这样使用同一模板源渲染多个context，只进行 一次模板创建然后多次调用render()方法渲染会
+# 更为高效：
+# Low
+for name in ('John', 'Julie', 'Pat'):
+    t = Template('Hello, {{ name }}')
+    print t.render(Context({'name': name}))
+---------每次执行都要创建模板t
+
+# Good
+t = Template('Hello, {{ name }}')
+for name in ('John', 'Julie', 'Pat'):
+    print t.render(Context({'name': name}))
+---------每次调用的都是之前创建的模板t，更高效
+
+
+-----------------------------safe过滤器------------------------------
+safe : 将安全机制关掉，意思就是我传进来的是什么就按照什么显示，而不是被转为字符串，例如我传进一个链接，那就应该是可以点击的，而不应该被转为普通的字符串来显示。还有就是告诉浏览器，传进去的内容是安全的。
+
+return render（request，“x.html”，{“k1”：“v1”，“k2”：“<h1>v2</h1>”}）
+
+{{ k1 }}
+{{ k2 }}
+页面输出：
+	v1
+	<h1>v2</h1>
+
+
+{{ k1 }}
+{{ k2 | safe }}
+页面输出：
+	v1
+	v2（加大加粗）
+
+=======================================深度查找========================================
+万能的句点号: .
+在template模板里面，{{ items.你想访问的内容 }}
+#最好是用几个例子来说明一下。
+# 首先，句点可用于访问列表索引，例如：
+
+>>> from django.template import Template, Context
+>>> t = Template('Item 2 is {{ items.2 }}.')
+>>> c = Context({'items': ['apples', 'bananas', 'carrots']})
+>>> t.render(c)
+'Item 2 is carrots.'
+
+#假设你要向模板传递一个 Python 字典。 要通过字典键访问该字典的值，可使用一个句点：
+>>> from django.template import Template, Context
+>>> person = {'name': 'Sally', 'age': '43'}
+>>> t = Template('{{ person.name }} is {{ person.age }} years old.')
+>>> c = Context({'person': person})
+>>> t.render(c)
+'Sally is 43 years old.'
+
+#同样，也可以通过句点来访问对象的属性。 比方说， Python 的 datetime.date 对象有
+#year 、 month 和 day 几个属性，你同样可以在模板中使用句点来访问这些属性：
+
+>>> from django.template import Template, Context
+>>> import datetime
+>>> d = datetime.date(1993, 5, 2)
+>>> d.year
+1993
+>>> d.month
+5
+>>> d.day
+2
+>>> t = Template('The month is {{ date.month }} and the year is {{ date.year }}.')
+>>> c = Context({'date': d})
+>>> t.render(c)
+'The month is 5 and the year is 1993.'
+
+# 这个例子使用了一个自定义的类，演示了通过实例变量加一点(dots)来访问它的属性，这个方法适
+# 用于任意的对象。
+>>> from django.template import Template, Context
+>>> class Person(object):
+...     def __init__(self, first_name, last_name):
+...         self.first_name, self.last_name = first_name, last_name
+>>> t = Template('Hello, {{ person.first_name }} {{ person.last_name }}.')
+>>> c = Context({'person': Person('John', 'Smith')})
+>>> t.render(c)
+'Hello, John Smith.'
+
+# 点语法也可以用来引用对象的方法。 例如，每个 Python 字符串都有 upper() 和 isdigit()
+# 方法，你在模板中可以使用同样的句点语法来调用它们：
+>>> from django.template import Template, Context
+>>> t = Template('{{ var }} -- {{ var.upper }} -- {{ var.isdigit }}')
+>>> t.render(Context({'var': 'hello'}))
+'hello -- HELLO -- False'
+>>> t.render(Context({'var': '123'}))
+'123 -- 123 -- True'
+
+# 注意这里调用方法时并没有使用圆括号，而且也无法给该方法传递参数，所以你只能调用不需参数的方法。
+
+
+=====================================变量的过滤器filter=====================================
+使用{{ }}的时候，对传进去的内容进行进一步处理：
+语法格式：      {{ obj | filter : param }}-------object为传进去的内容，filter为过滤器，param为过滤器所需的参数，当然有的过滤器不需要参数。
+# 1  add          ：   给变量加上相应的值
+   #
+   # 2  addslashes   :    给变量中的引号前加上斜线
+   #
+   # 3  capfirst     :    首字母大写
+   #
+   # 4  cut          ：   从字符串中移除指定的字符
+   #
+   # 5  date         ：   格式化日期字符串
+   #
+   # 6  default：“name”      ：   如果值是False（0，空，这些都属于False）,就替换成设置的默认值（这里为“name”），否则就是用本来的值
+   #
+   # 7  default_if_none:“name2”：  如果值是None，就替换成设置的默认值（这里为“name2”），否则就使用本来的值
+   #
+   # 8  safe           :     将安全机制关掉，意思就是我传进来的是什么就按照什么显示，而不是被转为字符串，例如我传进一个链接，那就应该是可以点击的，而不应该被转为普通的字符串来显示。还有就是告诉浏览器，传进去的内容是安全的。
+
+
+#实例:
+
+#value1="aBcDe"
+{{ value1|upper }}<br>-------ABCDE
+
+#value2=5
+{{ value2|add:3 }}<br>--------8
+
+#value3='he  llo wo r ld'
+{{ value3|cut:' ' }}<br>--------helloworld
+
+#import datetime
+#value4=datetime.datetime.now()
+{{ value4|date:'Y-m-d' }}<br>
+
+#value5=[]
+{{ value5|default:'空的' }}<br>-----------如果传进去的值为空，返回default定义的内容
+#value6='<a href="#">跳转</a>'
+
+
+{% autoescape off %}
+  {{ value6 }}             ---------------------与safe作用是一样的（{{ value6|safe }}<br>），告诉浏览器这个内容是安全的。
+{% endautoescape %}
+
+{{ value6|striptags }}
+
+#value7='1234'------------------------------传进来一个字符串
+{{ value7|filesizeformat }}<br>--------------得到
+{{ value7|first }}<br>------------------------取出来第一个字符
+{{ value7|length }}<br>---------------------得到它的长度
+{{ value7|slice:":-1" }}<br>------------------切片
+
+#value8='http://www.baidu.com/?a=1&b=3'
+{{ value8|urlencode }}<br>-----------------对传进来的内容进行编码
+    value9='hello I am yuan'
+
+===================================tag标签的使用==================================
+语法：{% tags %}
+
+----------------------------------------------------------
+
+判断：
+{% if 条件 %}
+      content------------条件满足，就会显示content
+{% else %}
+      content2
+{% endif %}
+
+----------------------------------------------------------
+
+for循环：
+{% for object in list %}
+      content
+{% endfor %}
+
+例子：
+list=[1,2,3,4,5,6,7,8,9]
+{% for name in list %}
+<h1>{{name}}</h1>------------------将list里面的元素逐行打印出来
+{% endfor %}
+（值得注意的是，如果你将{{name}}写成name，那么会打印9行字符串name）
+
+{{forloop.counter0}}----索引号，比如把他放在name前面，就会出现1 name，2 name，默认从1开始计算，在counter后面加个0，变成counter0便可以从0开始。
+{% empty %}-----------加在endfor之前，这样的话，for循环里面的列表如果为空时，empty至endfor之间的内容才会显示。
+例如：
+{% for name in list %}
+      abc-------------------如果列表为空，即不会进入循环，所以不会打印abc
+{% empty %}
+      efg-------------------此时，efg就会打印出来。如果列表不为空，efg即不会显示
+{% endfor %}
+
+注意事项：
+#{% if %} 标签接受and，or或者not来测试多个变量值或者否定一个给定的变量
+#{% if %} 标签不允许同一标签里同时出现and和or，否则逻辑容易产生歧义，例如这个标签是不合法的：{% if obj1 and obj2 or obj3 %} 
+#在标签里添加reversed来反序循环列表：
+    {% for obj in list reversed %}
+    ...
+    {% endfor %}
+#{% for %}标签可以嵌套
+#系统不支持中断循环，系统也不支持continue语句
+#forloop.revcounter将forloop.revcount的序列反转过来，例如3 name，2 name，1 name
+#forloop.revcounter0
+#forloop.first，第一次循环时为True，超过一次循环后为False 
+
+----------------------------------------------------------
+
+{% csrf_token %}----------相当于安全钥匙，只有在form表单里面加入这句话，网页提交过来的数据才能被认可。流程：后台将带有安全钥匙的html发到网页端，网页填好数据后再通过submit提交数据，同时带着这个钥匙返回，后台认为该数据可靠，然后接收数据。
+（当然，可以在django的settings文件里面将'django.middleware.csrf.CsrfViewMiddleware'这行代码注释掉，这样做就不需要输入{% csrf_token %}，而网页也可以提交数据了）
+
+实际上在render渲染的时候，它会把{% csrf_token %}渲染成下面的这个input标签，然后网页端submit的时候，该标签就会随同其他input标签一起返回给后台进行处理。
+<input type="hidden" name="csrfmiddlewaretoken" value="sWvW2o5yxwJfoHbRKmOUDfOobsH62I8EkanUndeVvn4AsRzijSTvaAf7qplCGR8y">--每次的value值都是不同的。
+
+----------------------------------------------------------
+
+{% url  "name" %}-----name为url文件里面你命名的路径，例如你在主项目url里面写了re_path("aa\"，views.aa，name="cc")，那么这个路径"aa\"，可以用"cc"来表示，而这个“cc”也就是{% url  ”cc“ %}里面的”cc“，这整个{% url  ”cc“ %}代码渲染出来后就是”/aa/“。
+
+----------------------------------------------------------
+
+{% with %}---------用更简单的变量名替代复杂的变量名
+比如我有一个很长的变量名，例如ABCDEFG，每次引用的时候都得这样用{{ ABCDEFG }}，太麻烦了，这个时候可以这样写：
+{% with ABC=ABCDEFG %}
+{{ ABC }} -----------这个时候{{ ABC }}就等同于{{ ABCDEFG }}
+{% endwith %}
+
+---------------------------------------------------------
+
+{% verbatim %}----------禁用render，也就是该标签里面的内容不会被渲染，里面是什么就是什么，比如你就想显示{{ abc }}而不是把它当作一个变量，这个时候就可以使用该标签了。
+{{ hello }} ----------------这个时候屏幕显示的就是{{ hello }}
+{% endverbatim %}
+
+---------------------------------------------------------
+
+{% load %}
+
+
+自定义标签：filter和simple_tag ----------自定义一个标签来获得我们想要的功能
+步骤：
+1.在app中创建templatetags模块
+2.创建任意.py文件，如my_tags.py
+3.在.py文件里面导入模块：
+from django import template
+from django.utils.safestring import mark_safe
+register=template.Library()    #register的名字是固定的，不可改变
+
+@register.filter--------自定义过滤器
+def filter_multi(x,y):
+    return x*y
+@register.filter--------自定义标签
+def filter_multi(x,y):
+    return x*y
+
+4.在html文件里面导入文件{% load my_tags%}，开始在html文件里面调用自定义filter或simple_tag
+{% load my_tags %}
+
+{{ 变量|自定义filter：参数}}-----自定义过滤器的使用（上面定义的filter名称为filter_multi，做加法运算，里面需要传进参数x，y，x为 {{ 变量|自定义filter：参数}} 里面的“变量”，y为“参数”，如果需要传进去多个参数，可以以列表的形式传进去，但“参数”那里不能直接传进去一个列表，你必须在views文件中将列表赋予给一个变量，比如aa，再把aa赋值给 {{ 变量|自定义filter：参数}} 里的“参数”）
+（自定义filter有个限制：“参数”里面只能传进一个参数）
+{% simple_tag 参数 %}----------自定义simple_tag的使用（这里的参数如果需要传进去多个参数，可以这样传：参数1 参数2 参数3，即以空格为间隔传进多个参数）
+（限制：不能用在控制语句里面）
+5.在settings中的INSTALLED_APPS配置当前app（就是在里面加上自己app的名字，比如本次的app是blog），不然django无法找到自定义的simple_tag.
+
+---------------------------------------------------------------------
+继承：
+
+被继承html：
+{% block content2 %}-------content2为自定义block的名字
+    内容------------------------在被继承html中加上block块，这个block里面的内容正常显示，但无法被继承，也就是说如果我在其他html里面继承了该html，这个block里面的内容不会被继承过去
+{% endblock %}
+
+继承html：
+{% extends “被继承html名称”%}---------该标签必须在最上面
+{% block content2 %}
+    内容------------------------在继承html里面，其他内容与被继承文件是一样的，但是block里面的内容需要自己写，这部分自己写的block内容会自动替换掉被继承文件里面的同名block内容
+{% endblock %}
+
+访问被继承html（也就是父模板）里block的内容，可以这样访问，{{ block.super }}---------访问父模板block里面的内容
+
+--------------------------------------------------------------------
+include标签：
+{% load staticfiled %}
+{% include “引用的html文件名”%}-----------在html文件里引用其他html文件的内容，但记得先在上面添加load标签
+
+--------------------------------------------------------------------
+（利用python进行数据库操作，orm对表单的增删改查）
+数据库模型：model---------------orm（object relation mapping对象关系映射表）
+
+一个实例就是一条记录：
+class aa（）：
+id=
+name=
+
+当这个类aa实例化的时候传进去参数便可以产生一个实例，这个实例实际上就是一条纪录，即表的一条纪录
+（而创建的这个类实际上就是在数据库里创建一张表）
+
+表的添加：
+创建表顺序：
+1.点开app里面的models
+
+2.创建一个类：
+# create table book(
+#     name varchar(20),
+#     price float(4,2),
+# )
+#下面将用python创建一个与上述内容相同的表
+class Book(models.Model):
+    # name varchar(20)，下面用CharField来表示字符串类型，max_length=20表示最大长度为20，null=True表示可以为空，当null=False时，不输入name将会报错，默认为True，blank=True表示在admin中创建实例时此字段可以为空
+    name=models.CharField(max_length=20,null=True,blank=True)
+    # IntegerField为整数类型，长度可不设，默认为十一位
+    price=models.IntegerField()
+    # DateField为时间类型
+    pub_date=models.DateField()
+    # 创建一个外键
+    publish=models.ForeignKey（"Publish"）----------- 前面的例子是直接与Publish表进行关联，但我们一般这样写：publish=models.ForeignKey（to="Publish", to_field="id"），表示与Publish表进行关联，关联字段为id
+3.在命令行运行manage.py文件，python manage.py makemirations
+
+4.可以在app下面的migrations文件夹里面看到一个新建的文件
+
+5.再次运行manage文件，python manage.py migrate
+
+6.可以看到manage文件上方出现一个数据库db.sqlite3，因为此时系统默认使用的数据库为sqlite
+
+（生成同步数据库的脚本：python manage.py makemigrations  ；同步数据库:  python manage.py migrate   ）
+
+查看这个db数据库的操作：
+1.点开pycharm右边的database，单击+，选择data source里面的sqlite（或者MySQL）
+2.在弹出来的面板左边选择sqlite，右边单击apply，然后ok（mysql的话要选择接口，还要填账号密码）
+3.将manage文件上方的db.sqlite3文件拖拽到右边的database那里（mysql的话省略这一步）
+4.点开main，然后找到对应的app，双击
+5.可以点击的页面上方的加号来添加一条纪录
+
+表记录的添加：
+方式一：在views函数里面定义一个函数，用于比如人访问你的时候执行这个函数，然后在里面对数据库类进行实例化
+def shili(request):
+    b=Book(参数，比如author=“yuan”，price=88)----------创建一个实例b
+    b.save()-----------------将数据保存到数据库里面
+方式二：
+def shili(request):
+    Book.objects.create(参数，例如name=，price=，author=)----------语句一旦执行就会将数据自动保存到数据库里面
+
+表记录的删除：
+Book.objects.filter(参数，即选择是哪一条纪录，比如author=“yuan”).delete()
+
+
+    
+表记录的修改：
+方式一：
+Book.objects.filter(参数，即选择是哪一条纪录，比如author=“yuan”).update（修改内容，price=99）-------修改所有的author=“yuan”的行，返回的是一个QuerySet对象
+方式二：
+b=Book.objects.get(参数，即选择是哪一条纪录，比如author=“yuan”) ------仅修改一行，返回的是一个model对象
+b.price=120
+b.save()
+（一般用方式一，效率高，save方法调用时会给所有值重新赋值，即便有的值你没有修改，因此方式二效率不高）
+
+查看每一步的底层raw sql语句：
+1.先在settings文件里面加入下列：
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+    }
+}
+
+表记录的查询：
+a=Book.objects.filter(条件，例如id=2)--------返回queryset集合对象（filter里面还可以这样写来筛选价格大于50的书，filter（price__gt=50），小于的话是price__lt，又比如想取出名字里面包含p的书本，可以这样写filter(name__contain="p"，__icontain的话不区分大小写，这些都可以通过__来查询使用)）
+a=Book.objects.all() ----------查询Book的所有信息，返回的a为一个queryset集合对象，可以通过循环来取出每个对象（可以对该对象进行切片操作，例如[::2]，意思时每隔一个取一个）
+a=Book.objects.first()---------返回集合对象的第一个
+a=Book.objects.last()---------返回集合对象的最后一个
+a=Book.objects.get(条件)-------返回与所给筛选条件相匹配的对象，返回结果有且只有一个，如果符合筛选条件的对象超过一个或者没有都会抛出错误。
+
+正向查询：
+book_obj=Book.objects.get(name="python")
+pub_obj=book_obj.publish-----书籍对象对应的出版社对象
+pub_obj.name
+反向查询、关联查询：
+pub_obj=Publish.objects.filter(name="出版社")[0]
+pub_obj.book_set.all().values("name","price")
+我拿到了一个出版社对象publish_object，想要找出该出版社出版的所有书籍，可以这么做
+book_object=publish_object.book_set.all()，拿到的就是与该出版社相关联的书籍的集合
+
+一对多：book_obj.publish--------拿到的一定是个对象
+
+关联查询：
+我拿到了一个出版社对象publish_object，想要找出该出版社出版的所有书籍，可以这么做
+book_object=publish_object.book_set.all()，拿到的就是与该出版社相关联的书籍的集合
+
+例子：
+Teachers.objects.filter(id_gt=1)-----获取id大于1的对象
+
+
+-----------------------------------------------------
+双下划线查询（常用）：
+我想找出广东出版社的所有书籍：
+Book.objects.filter（publish__name="广东出版社"）
+
+我想找出java这本书的出版社名字：
+正向查找：
+Book.objects.get(name="java").publish.name
+反向查找：
+Publish.objects.filter(book__name="java").values("name")
+
+values也可以使用双下划线：
+aaaa = models.Classes.objects.filter(id=5)------得到班级id=5的班级对象
+a=aaaa.values("teacher__name")------得到教班级id=5的班级的老师的名字
+
+在ForeignKey或者ManyToMany的参数中输入 relate="自定义名字"，这样的话利用关联查询时就不是输入book_set了，而是用自定义名字
+例如：用class对象反向查找student可以这么写（假定在student表里这样写：class = ForeignKey（"class"，relate = "aaa"））
+class_object.aaaa
+( 以往这样写：class_object.student_set )
+
+------------------------------------------------------------------
+
+
+orm多表操作之一对多增加纪录：
+比如一个出版社可以出多本书，那么就可以在“多”的那里增加外键，“多”的外键关联会自动关联“一”的主键
+class Book(models.Model):
+    name=models.CharField(max_length=20)
+    price=models.IntegerField()
+    pub_date=models.DateField()
+    publish=models.ForeignKey("Publish")-------------增加外键publish，在数据库上我们看到的外键时publish_id，因为django会默认在我们创建的名字“publish”后加上_id
+（注意，在对Book进行实例化时，传入的参数publish=publish_object，这个参数publish_object必须是一个对象，如果不想传对象而传的是publish对应id的话，可以这么写publish_id= id）
+
+问题：
+添加外键后进行数据迁移会出错，警告：__init__() missing 1 required positional argument: 'on_delete'
+在django2.0后，定义外键和一对一关系的时候需要加on_delete选项，此参数是为了避免两个表里的数据不一致问题
+在老版本中参数on_delete=models.CASCADE是默认值，现在需要手动添加参数，on_delete=models.CASCADE
+on_delete有CASCADE、PROTECT、SET_NULL、SET_DEFAULT、SET()五个可选择的值
+CASCADE：此值设置，是级联删除。（一般默认使用）
+PROTECT：此值设置，是会报完整性错误。
+SET_NULL：此值设置，会把外键设置为null，前提是允许为null。
+SET_DEFAULT：此值设置，会把设置为外键的默认值。
+SET()：此值设置，会调用外面的值，可以是一个函数。
+
+
+__str__函数，返回一个对象的描述信息，例如，当得到实例abb时，print（abb）==你实例化时传进去的name（这里是alex），而不是 <__main__.abc object at 0x0000022E420DC278>
+class abc():
+    def __init__(self,name):
+        self.name=name
+    def __str__(self):
+        """返回一个对象的描述信息"""
+        return self.name
+abb=abc("alex")
+
+
+orm多表操作之多对多增加纪录
+class Book(models.Model):
+    name=models.CharField(max_length=20)
+    price=models.IntegerField()
+    pub_date=models.DateField()
+    publish=models.ForeignKey("Publish",on_delete=models.CASCADE)
+    authors=models.ManyToManyField("Author")--------多对多添加
+    def __str__(self):-----------------------------------------对实例进行描述
+        return self.name
+class Authors(models.Model):
+    name=models.CharField(max_length=20)
+book_obj=Book.objects.get(id=4)
+author_objs=Author.objects.all()
+增加Authors属性：book_obj.authors.add(*author_objs)-----author_objs为列表，当作参数传进去时需要在前面加上*
+删除多对多关系：book_obj.authors.remove(*author_objs)------*author_objs为多个对象，如果仅想删除一个对象，可以把该对象作为参数传进去，当然也可以传进去数字1，表示删除authors_id=1的author，
+（多对多操作会自动创建第三张表，可以实例化第三张表以创建另外两张表的多对多关系）
+
+orm多表操作之一对多增加纪录：
+比如一个出版社可以出多本书，那么就可以在“多”的那里增加外键，“多”的外键关联会自动关联“一”的主键
+class Book(models.Model):
+    name=models.CharField(max_length=20)
+    price=models.IntegerField()
+    pub_date=models.DateField()
+    publish=models.ForeignKey("Publish")-------------增加外键publish，在数据库上我们看到的外键时publish_id，因为django会默认在我们创建的名字“publish”后加上_id
+（注意，在对Book进行实例化时，传入的参数publish=publish_object，这个参数publish_object必须是一个对象，如果不想传对象而传的是publish对应id的话，可以这么写publish_id= id）
+
+
+多对多关系的remove与clear方法：
+#正向
+book = models.Book.objects.filter(id=1)
+#删除第三张表中和女孩1关联的所有关联信息
+book.author.clear()        #清空与book中id=1 关联的所有数据
+book.author.remove(2)  #可以为id
+book.author.remove(*[1,2,3,4])     #可以为列表,前面加*
+#反向
+author = models.Author.objects.filter(id=1)
+author.book_set.clear() #清空与boy中id=1 关联的所有数据
+
+from django.db.models import Min,Sum,Avg,Count,F,Q
+aggregate聚合函数：
+求平均值：ret=Book.objects.all().aggregate(Avg（"price"）)---------找到所有的book里面的price，然后求出平均值
+求和：ret=Book.objects.all().aggregate(sum（"price"）)---------找到所有的book里面的price，然后求和
+数数：ret=Book.objects.all().aggregate(Count（"price"）)---求出price字段的个数，比如我有四本书，那我就有四个price，然后ret={“price_count”：4}
+ret为一个字典：{"price_avg"：100}，price_avg为系统自动取的名字，也可以自己取，在聚合函数里面写上aggregate(自己定义的名字=Avg("price"))即可
+annotate分组函数：
+ret=Book.objects.values("name","price").annotate(sum（"price"）)--------将所有的name与price都相同的元素放到一起，然后再求这一组的和
+（这时候 ret = <QuerySet [{'price': 20, 'price__sum': 200}, {'price': 80, 'price__sum': 480}]>）
+b=Book.objects.values("name").annotate(Min("price"))-----先将所有对象进行分组，name相同的放一起，然后找到每组对象中price最低的对象进行组合然后输出
+（当然annotate可以输入多个参数，c=Book.objects.values("price").annotate(Sum("price"),Count("price"),Max("price"))）
+
+F，使用查询条件的值,专门获取对象中某列值的操作：
+给所有书籍的price加10元：
+Book.objects.all().update(price=F("price")+10)-----引入了F函数，表示获取对应对象的price值
+
+Q，更细致的条件查询：
+Book.objects.filter（Q(name="alex")&Q(price=20)）-------找到name="alex"且price=20的对象，其中&表示与，| 表示或，~ 表示非
+Q查询可以与关键字参数查询一起使用，但一定要把Q对象放在关键字参数的前面。
+    # 正确：
+    Book.objects.get(
+        Q(pub_date=date(2005, 5, 2)) | Q(pub_date=date(2005, 5, 6)),
+        title__startswith='P')
+    # 错误：
+    Book.objects.get(
+        question__startswith='P',
+        Q(pub_date=date(2005, 5, 2)) | Q(pub_date=date(2005, 5, 6)))
+
+Teachers.objects.filter(id_gt=1)-----获取id大于1的对象
+
+queryset特性（缓存问题）：
+ret=Book.objects.filter（price=87)------这句话只会生成一个queryset对象，而不会真的去数据库查找，只有用到这个对象的时候才会去数据库查找，比如print（ret）
+想要知道是否与数据库发生互动，可以在settings里面设置查看原生sql语句。这种特性的目的是提高程序的效率。
+exists（）方法：
+if ret：-----------判断ret是否为空，不为空的话打印ok，这句判断执行后会与数据库交互，并取出数据放到缓存里面
+ print（"ok"）
+（如果不想要取出数据库的数据到缓存，可以使用exists方法，该方法可以判断ret是否含有数据，有的话返回True，否则返回False，ret.exists()）
+（还可以调用iterator迭代器，ret=ret.iterator()，这样ret为一个迭代器，每次调用只会调用ret里面的一个数据，而不会调用整个ret数据）
+
+----------对初步筛选的结果进行二次筛选-----------
+values：Book.objects.filter(条件，例如id=2).values("name","price")------找到所有id=2的对象，然后只取出该对象的name值和price值，返回形式为一个queryset列表，里面是一个个的字典，{“name”：“啊”，“price”：1}
+values_list：与values一样，返回的是一个queryset列表，但列表里面是一个个的元组，[ ("a",1)，("b",2) ]
+exclude：Book.bojects.exclude(id=2)-----找出所有id不是2的，相当于集合id=2的补集
+distinct：Book.bojects.all().values("name").distinct()------先取出所有的name，然后去除相同的name，通常与values合用
+order_by(*field):      对查询结果排序，例如按照id来排序，order_by(id)。
+reverse():             对查询结果反向排序
+distinct():            从返回结果中剔除重复纪录
+values_list(*field):   它与values()非常相似，它返回的是一个元组序列，values返回的是一个字典序列
+count():              返回数据库中匹配查询(QuerySet)的对象数量。
+exists():             如果QuerySet包含数据，就返回True，否则返回False。
+
+主表.子表_set----------通过主表去访问子表（主表.子表_set.all()---返回一个qureyset对象）
+
+-----------------------------------数据库配置------------------------------------
+
+----------------简介--------------------
+1    django默认支持sqlite，mysql, oracle,postgresql数据库。
+     <1> sqlite
+
+            django默认使用sqlite的数据库，默认自带sqlite的数据库驱动 , 引擎名称：django.db.backends.sqlite3
+
+     <2> mysql
+
+            引擎名称：django.db.backends.mysql
+
+2    mysql驱动程序
+   MySQLdb(mysql python)
+   mysqlclient
+   MySQL
+   PyMySQL(纯python的mysql驱动程序)
+
+----------------------------------------
+连接mysql数据库：
+
+1.设置配置文件settings.py：
+DATABASES = {
+
+    'default': {
+
+        'ENGINE': 'django.db.backends.mysql', 
+
+        'NAME': 'books',    #你的数据库名称
+
+        'USER': 'root',   #你的数据库用户名
+
+        'PASSWORD': '', #你的数据库密码
+
+        'HOST': '', #你的数据库主机，留空默认为localhost
+
+        'PORT': '3306', #你的数据库端口
+
+    }
+
+}
+
+2.设置完后，再启动我们的Django项目前，我们需要激活我们的mysql。
+
+然后，启动项目，会报错：no module named MySQLdb
+
+这是因为django默认你导入的驱动是MySQLdb，可是MySQLdb对于py3有很大问题，所以我们需要的驱动是PyMySQL
+
+所以，我们只需要找到项目名文件下的__init__,在里面写入：
+
+import pymysql
+pymysql.install_as_MySQLdb()
+
+问题解决！
+
+（错误：django.core.exceptions.ImproperlyConfigured: mysqlclient 1.3.13 or newer is required; you have 0.9.3.
+File "C:\Users\82021\AppData\Local\Programs\Python\Python37\lib\site-packages\django\db\backends\mysql\base.py", line 36, in <module>
+    raise ImproperlyConfigured('mysqlclient 1.3.13 or newer is required; you have %s.' % Database.__version__
+解决方案：将该文件夹下的if version...注释了即可
+)
+
+（错误：AttributeError: 'str' object has no attribute 'decode'
+File "C:\Users\82021\AppData\Local\Programs\Python\Python37\lib\site-packages\django\db\backends\mysql\operations.py", line 146, in last_executed_query
+    query = query.decode(errors='replace'
+解决方案：将decode改为encode
+)
+
+
+-------------------------------------------------------------------------------------------------------------
+day53------admin，cookie，session
+（ 网址：https://www.cnblogs.com/yuanchenqi/articles/5716193.html ）
+
+admin：
+要使用admin，必须先创建一个admin，方法：python manage.py createsuperuser
+
+定制自己的admin：
+class MyAdmin(admin.ModelAdmin):
+    list_display = ("id","price","name","publish")-----在admin后台显示元组里面的内容，元组里的内容不可以是多对多
+    list_editable = ("name","price","publish")-----使元组里面的内容可编辑
+    filter_horizontal = ("authors",)---------里面的对象必须是多对多对象，然后在admin界面里，创建Book对象时，选择authors不再是单击authors，而是将authors从左边的表放到右边的表以表示选择
+    filter_vertical = ("authors",)------------与 filter_horizontal 功能一样，但表格布置方式不一样，本方法布置的表格方式为竖向分布
+    list_per_page = 2----------分两页显示
+    search_fields = ("id","name","publish")-----搜索框，搜索优先顺序为id>name>publish
+    list_filter = ("name","pub_date")--------筛选排序，右边出现一个小框框，根据name来排序，或者根据日期来筛选排序（最近一个月，最近一年）
+    ordering = ("price",)-------排序，以价格的升序来排，“-price”----以价格的降序来排
+admin.site.register(models.Book,MyAdmin)
+
+问题： 
+1.如果一个模型里包含了ManyToManyField或者ForeignKey，在admin后台可能会显示成object：  
+解决：只需要在models里面的表中加入下面这行即可 
+def __str__(self):
+        return self.name
+2.将admin界面换成中文界面：在settings文件里面修改，LANGUAGE_CODE = 'zh-hans'（英文：LANGUAGE_CODE = 'en-us'）
+class Book(models.Model):
+    name=models.CharField(max_length=20,verbose_name="名字")-------定义Book的时候，在name这一行的参数里面加入verbose_name="名字"这个参数，这样点开admin里面的Book的时候，上面不是显示name，而是你定义的“名字”
+
+3.搜索框出错：Related Field got invalid lookup: icontains：
+将 search_fields = ("name","id","publish")里面的外键删掉，这里的外键是 publish
+
+--------------------------------------------------------
+cookie：
+应用场景：
+判断是否登录，没登陆的话返回login页面，登陆的话返回我的首页
+1.第一次访问需要登陆，返回login页面，返回login页面的时候顺便带上cookies1
+2.用户输入信息点击登陆，这时候返回cookies2，cookies2里面带上用户信息，以方便验证用户身份
+name=request.POST.get("name")
+ret=redirect("/index/")----设置重定向，这时候不会执行重定向，而是返回一个对象赋值给ret
+ret.set_cookie("user","alex",max_age=10，expires=datetime.datetime.utcnow()+datetime.timedelta(days=3))----设置返回页面的cookies，下次用户再访问本网站时会自动带上本次给的cookies，因此可以跳过某些认证，max_age=10表示cookies的有效时间为10秒，expires=datetime.datetime.utcnow()+datetime.timedelta(days=3)表示在现在时间的基础上再加三天作为cookies的有效时间
+return ret--------返回ret页面（这里是重定向到其他路径）
+3.判断cookies，以知道是否返回用户界面或者返回登陆界面
+user=request.COOKIES.get("user",None)-----cookies为一个字典，这里获取user的值，获取不到的话取默认值None
+if user  ==“alex”：
+    return alex_html
+(单纯的cookies出现的问题，每次浏览器都会将完整的cookies发给服务器，然后服务器在原来cookies的基础上再添加新的键值对返回给浏览器，这样的话，cookies就会越来越长，降低了传输效率)
+解决办法：cookies与session连用
+session相当于钥匙串，存储于服务器，cookies相当于钥匙串的号码，每次客户端带着号码来访问服务器，都会去查找自己的session，session里面有这个钥匙，那你就可以访问钥匙背后相应的内容
+session方法：session默认在服务器保存15天
+获取login=request.session["is_login"]
+设置request.session["is_login"]=True
+设置request.session["user"]=name
+获取request.session.get("is_login",None)
+删除del request.session[key]
+session设置失效时间：
+request.session.set_expiry(value)
+* 如果value是个整数，session会在些秒数后失效。
+* 如果value是个datatime或timedelta，session就会在这个时间后失效。
+* 如果value是0,用户关闭浏览器session就会失效。
+* 如果value是None,session会依赖全局session失效策略。
+
+--------------------------------------------------------------------------------------------------------------------
+请求生命周期：
+1.客户端生成请求头、请求体，发送http请求
+2.服务器接收，根据请求头中的url在路由关系表中进行匹配
+3.匹配成功后，执行指定的views函数
+	URL ->函数   一个url对应一个函数，也就是FBV模式，function base view
+	URL ->类      一个函数对应一个类，也就是CBV模式，class base view
+	CBV模式：在views里，定义一个类ABC，ABC继承View，在这之前先从django.views导入View，然后ABC里面定义一个函数get，还有post函数，这时候在url里写上：re_path("xixi/", views.CBV.as_view())
+	                这时候，只要客户端以get形式访问服务器就会执行get函数，以post形式访问就会执行post函数
+4.业务处理
+	
+--------------------------------------------------------------------------------------------------------------------
+Ajax（向后台发送请求但不刷新页面）：
+1.引入 jQuery
+2.$.ajax({ 
+	url:"/classes.html/"，
+	type:"POST"，
+	data: { "username":"root"，"password":"123" }
+	dataType: "JSON"，---------------------将服务端返回的arg解序列化，恢复成数据结构
+	traditional：true  -----------------------问题解决：3
+	success:function(arg){
+		//回调函数
+		收到服务器返回的信息后便执行此函数
+		arg------服务器返回的信息，服务器端使用 HttpResponse("content")来返回信息，如果使用render或者redirect会报错
+	}
+ })
+
+实用方法：-------------------------------------------------------------------------------
+1. 页面刷新：window.location.reload()；
+2. 给标签赋文本值：$("").text(文本)
+
+问题：------------------------------------------------------------------------------------
+1. 使用json对字典进行包装后，返回给用户端出现中文乱码
+解决：
+a={"name":"爱你哦","class":"aaa"}
+return HttpResponse( json.dumps(a, ensure_ascii=False) )------在后面加入ensure_ascii=False即可
+（延申：前端的json，dumps----JSON.stringify(数据)，loads----JSON.parse(数据)）
+
+2. Ajax遇csrf_forbidden解决办法（凡是以post提交都会需要csrf）：
+
+3.当你使用ajax时，如果data: { "list":[1,2,3] }里面传进去的是一个列表，那么后台收到的data的key不是"list"，而是"list[]"，如果在后台仍然想用list来获取值，可以在ajax里面加入一个键值对，traditional：true
+
+4.data: { "list":value }，value只支持数组、字符串及数字，不可以传字典，如果想要传字典的话可以把字典通过json变成字符串再传进去，data: { "list":JSON.stringify({"k1":"v1"}) }
+
+--------------------------------------------------------------------------------------------------------------------
+Django内置分页：（https://www.cnblogs.com/wupeiqi/articles/5246483.html）
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger 
+
+paginator=Paginator（数据，每页显示数据的条数）---（user_list，10）-------将数据切片，变成单页的数据
+posts=paginator.page(current_page)----------------------current_page那一页的数据
+
+paginator的属性：
+per_page: 每页显示条目数量
+count:    数据总个数
+num_pages:总页数
+page_range:总页数的索引范围，如: (1,10),(1,200)
+page:     page对象
+
+page的对象posts的属性：
+has_next              是否有下一页
+next_page_number      下一页页码
+has_previous          是否有上一页
+previous_page_number  上一页页码
+object_list           分页之后的数据列表
+number                当前页
+paginator             paginator对象-----------也就是说可以通过posts对象来调用paginator的属性，比如获取数据总个数，posts.paginator.count
+     
+{% for foo in posts.object_list %}-------------------------------------显示当前页面posts的内容
+    <li>{{ foo }}</li>
+{% endfor %}
+{% if posts.has_previous %}-------------------------------------------判断posts是否有上一页，有的话创建上一页的链接
+    <a href="/fenye?p={{ posts.previous_page_number }}">上一页</a>
+{% endif %}
+{% if posts.has_next %}------------------------------------------------判断posts是否有下一页，有的话创建下一页的链接
+    <a href="/fenye?p={{ posts.next_page_number }}">下一页</a>
+{% endif %}
+</ul>
+
+--------------------------------------------------------------------------------------------------------------------
+Form组件：
+https://www.cnblogs.com/wupeiqi/articles/6144178.html
+
+1.对用户请求进行验证 -------（Ajax，Form都生效）
+2.生成html代码
+
+步骤：
+1.创建一个类
+2.类中创建字段（包含正则表达式）
+
+from django.core.exceptions import ValidationError
+from django import forms
+from django.forms import fields,widgets
+class F1Form(forms.Form):
+    user=fields.CharField(max_length=20,
+    		     min_length=1,
+   		     required=True，
+  	 	     error_messages={"required":"用户名不能为空"，"max_length":“用户名过长”，“min_length”：“用户名过短”}）--------设定自定义错误信息，如不设定，则按照默认的来（自定义提示信息）
+			（注意，所有的格式错误的key都用“invalid”，即 error_messages={“invalid”：“请务必填入数字”}）
+    pwd=fields.CharField(required=True,min_length=2)
+    age=fields.IntegerField(required=True)
+    email=fields.EmailField(required=True) ----------------------------创建各个字段，然后给每个字段规定要求
+
+    def clean_user(self):--------判断user字段输入正确后执行此函数
+	if 用户名已存在：
+		raise ValidationError（"用户名已存在"）
+	return self.cleaned_data["user"]---------保持系统默认的cleaned_data不变，不输入此行，cleaned_data里面的user字段对应的value为None
+    def clean_age(self):
+	return self.cleaned_data["age"]
+    def clean(self):------------------------------------对整体信息进行验证
+	value_dict = slef.cleaned_data
+	v1 = value_dict.get("username")
+	v2 = value_dict.get("user_id")
+	if v1 == "root" and v2 == 1:
+		raise ValidationError("整体错误信息")---------前端可以通过 .__all__来获取
+	return self.cleaned_data
+
+def f1(request):
+    if request.method=="GET":
+        return render(request,"f1.html")
+    else:
+        form1=F1Form(request.POST) -----------------------------------对F1Form进行实例化，传进参数request.POST，该参数里面包含了所有的返回信息，form组件会对信息进行核对，查看是否满足要求
+        if form1.is_valid(): -------------------------------------------------数据合理返回True
+            print(form1.cleaned_data)
+            return HttpResponse(str(form1.cleaned_data)) ---------------form1.cleaned_data为清洗过的数据，为一个字典，{'user': 'fg', 'pwd': 'fg222', 'age': 20, 'email': '1023222@qq.com'}
+        else:
+            print(form1.errors)
+            return HttpResponse(str(form1.errors)) -----------------------form1.errors为错误信息
+
+{{ form1.errors.user }} --------------------------------------------------在模板里面可以仅仅获取某个错误信息，而不需要获取整个错误信息
+
+------------------------------------------------Form组件自动生成html示例----------------
+网址：https://www.cnblogs.com/wupeiqi/articles/6144178.html
+
+def f1(request):
+    if request.method=="GET":
+        form1 = F1Form()-----------------------用户通过get方式请求网站，虽然对form进行实例化，但不传入参数，这时候实例form1仅具有我们自定义的字段内容（然后看到html的①）
+        （当然也可以填入参数，F1Form({“user”：“123”})，传进去一个字典，意思是默认用户传进了user=123）
+        
+        return render(request,"f1.html",{"form1":form1})
+    
+else:
+        form1=F1Form(request.POST)----------用户通过post方式访问网站，该form1包含了用户输入的信息，以及自定义的字段（看向②）
+        if form1.is_valid():
+            # print(form1.errors.user)
+            return render(request,"f1.html",{"form1":form1})
+        else:
+            print(type(form1.errors))
+            print(form1.errors)
+            return render(request,"f1.html",{"form1":form1})
+
+<form action="/f1/" method="post" id="fm">
+{#    <input type="text" name="user">#}
+{#    <input type="text" name="pwd">#}
+{#    <input type="text" name="age">#}
+{#    <input type="text" name="email">#}
+    {{ form1.user }}------------------------------------------------①，这时候的form1.user仅仅是一条没有内容的input标签，该标签对用户输入做了限制
+    {{ form1.pwd }}
+    {{ form1.age }}-------------------------------------------------②，这时候的form1.age是一条含有用户输内容的input标签
+    {{ form1.email }}
+    <input type="submit" value="提交">
+    <input type="button" value="Ajax提交" onclick="submitAjaxForm()">
+    {% csrf_token %}
+</form>
+
+{{ form1.as_p }} ------------------------------------------------------ 在html页面可以这样调用，就不必再像①②那样一行行的写了，可以一次性将全部的input标签创建出来，form1.as_p 后面的P指的是以P标签的形式插入，当然也可以这么写{{ form1.as_ul }}，意思是以ul标签的形式插入
+
+（使用该form组件生成html的好处是：1.form表单提交后会刷新页面，这时候用户输入的数据就会消失，使用form组件自动生成的html里面含有用户输入的数据，即刷新页面之后数据依然存在）
+
+Field
+    required=True,               是否允许为空
+    widget=None,                 HTML插件-------可以定制自己的html标签，例如给标签添加属性class：user=fields.CharField( widget=widgets.TextInput(attrs={"class":"c1"}) )
+(可以通过widget将下拉框变成多选框：city=fields.MultipleChoiceField(choices=[(1,"村长"),(2,"sdsd"),(3,"www")],widget=widgets.CheckboxSelectMultiple))
+
+    label=None,                  用于生成Label标签或显示内容
+    initial=None,                初始值
+    help_text='',                帮助信息(在标签旁边显示)
+    error_messages=None,         错误信息 {'required': '不能为空', 'invalid': '格式错误'}
+    show_hidden_initial=False,   是否在当前插件后面再加一个隐藏的且具有默认值的插件（可用于检验两次输入是否一直）
+    validators=[],               自定义验证规则
+    localize=False,              是否支持本地化
+    disabled=False,              是否可以编辑
+    label_suffix=None            Label内容后缀
+
+-----------------------------------------------------------------------------------------------
+Form组件与数据库连用：
+
+让form组件里面的字段与model数据库表额字段名字一样，这样创建数据库实例时就很简单，操作如下：
+Book.object.create(**form1.cleaned_data)
+
+-----------------------------------------------------------------------------------------------
+form上传文件：
+
+form组件里面：ff=fields.FileField()
+
+前端的form需要这样写：<form enctype="multipart/form-data">
+
+在后台接受文件需要这样写：request.FILES
+obj.F1Form(request.POST，request.FILES)
+
+----------------------------------------------------------
+form组件之下拉框：
+https://www.cnblogs.com/wupeiqi/articles/6144178.html
+
+ChoiceField(Field)
+    ...
+    choices=(),                选项，如：choices = ((0,'上海'),(1,'北京'),)
+    required=True,             是否必填
+    widget=None,               插件，默认select插件
+    label=None,                Label内容
+    initial=None,              初始值
+    help_text='',              帮助提示
+
+示例：city=fields.ChoiceField(choices=[(1,"村长"),(2,"sdsd")，])--------前面的1、2对应option的value，而后面的”村长“为显示的内容
+
+多选：
+city=fields.MultipleChoiceField(choices=[(1,"村长"),(2,"sdsd"),(3,"www")])
+
+上述方法会有一个问题，就是前端返回的选择结果会是字符串，例如选择了”sdsd“与”www“，那么后台手打的是["2","3"]，而我们想要的是[2,3]，那么可以使用TypedMultipleChoiceField来代替MultipleChoiceField
+TypedMultipleChoiceField( coerce = lambda x: int(x)   将字符串x转为整型x )
+
+----------------------------------------------------------
+form组件之动态绑定数据：
+
+from django.forms import Form
+from django.forms import widgets
+from django.forms import fields
+from django.core.validators import RegexValidator
+ 
+方式一：
+class MyForm(Form):
+ 
+    user = fields.ChoiceField(
+        # choices=((1, '上海'), (2, '北京'),),
+        initial=2,
+        widget=widgets.Select ----------------------这些是类的静态属性，只会执行一次，也就是说当你第二次实例化MyForm时，这些属性不再重新加载，尽管可鞥这些属性值发生了变化，那如果我想要实时更新的话，只能通过下方的init函数来达到目的，因为init函数每次实例化的时候都会执行，因此能拿到最新的数据
+    )
+ 
+    def __init__(self, *args, **kwargs):
+        super(MyForm,self).__init__(*args, **kwargs)
+        # self.fields['user'].widget.choices = ((1, '上海'), (2, '北京'),)
+        # 或
+        self.fields['user'].widget.choices = models.Classes.objects.all().value_list('id','caption')
+
+
+方式二：
+使用django提供的ModelChoiceField和ModelMultipleChoiceField字段来实现
+
+from django import forms
+from django.forms import fields
+from django.forms import widgets
+from django.forms import models as form_model
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+ 
+class FInfo(forms.Form):
+    authors = form_model.ModelMultipleChoiceField(queryset=models.NNewType.objects.all())
+    # authors = form_model.ModelChoiceField(queryset=models.NNewType.objects.all())
+    to_field_name="id" ------------这行的意思是option的name=object.id
+
+---------------------------------------------------------------------------------------------------------------------
+Django序列化：https://www.cnblogs.com/wupeiqi/articles/5246483.html
+1.把对象转换成字符串（或其他可以保存的形式）的过程称为序列化，例如将字典转换成字符串以保存在硬盘中
+2.将字符串转换回对象的过程称为反序列化
+
+关于Django中的序列化主要应用在将数据库中检索的数据返回给客户端用户，特别的Ajax请求一般返回的为Json格式。
+1、serializers-----------可以序列化queryset对象，但无法序列化其他（例如字典）
+from django.core import serializers
+ret = models.BookType.objects.all()
+data = serializers.serialize("json", ret)
+2、json.dump----------无法序列化queryset对象，但能序列化其他
+import json
+#ret = models.BookType.objects.all().values('caption')
+ret = models.BookType.objects.all().values_list('caption')
+ret=list(ret)
+result = json.dumps(ret)
+
+在前端反序列化：ajax默认反序列化一次，当你需要第二次反序列化可以这样写，var data = JSON.parse(argv.data)
+
+
+由于json.dumps时无法处理datetime日期，所以可以通过自定义处理器来做扩展，如：
+import json 
+from datetime import date 
+from datetime import datetime 
+class JsonCustomEncoder(json.JSONEncoder):   
+    def default(self, field): 
+        if isinstance(field, datetime): 
+            return o.strftime('%Y-%m-%d %H:%M:%S') 
+        elif isinstance(field, date): 
+            return o.strftime('%Y-%m-%d') 
+        else: 
+            return json.JSONEncoder.default(self, field) 
+# ds = json.dumps(d, cls=JsonCustomEncoder) 
+
+---------------------------------------------------------------------------------------------------------------------
+文件上传：
+def upload(request):
+    if request.method == "GET":
+        return render(request,"upload.html",locals())
+    else:
+        img = request.FILES.get("img")
+        #img是对象（包括文件大小，名称，内容）
+        print(img.size,img.name)
+        with open(img.name,"wb") as f:
+            for line in img.chunks():-----------文件的内容存储在img.chunks()中，它为一个迭代器，所以取值的时候需要使用循环
+                f.write(line)
+        return HttpResponse("success")

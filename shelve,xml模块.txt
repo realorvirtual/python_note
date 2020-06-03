@@ -1,0 +1,17 @@
+shelve模块：import shelve
+shelve模块比pickle模块简单，只有一个open函数，返回类似字典的对象，可读可写；key必须为字符串，而值可以是python所支持的额数据类型。
+
+f.shelve.open(r"shelvel") 目的是将一个在字典放入文本，解释器会创建三个文本。
+写入操作：f[key]=“数据”,操作完成后使用f.close()关闭文件。
+取出数据:f.get(key)
+
+xml模块：import xml.etree.ElemenTree as ET   (后面的as ET的作用是，使用函数时可以直接用ET.函数名，而不需要每次都打那么长的模块名，也可以不是ET，也可以用其他的变量名)
+跟json一样用来做数据交换，json比xml更加简单和高级。
+解析xml数据：parse，整体可以这么写tree=ET.parse("xml文件路径")，这个ET.parse其实就相当于open，而tree=ET.parse（"文件路径"）就相当于f=open("文件路径")。
+root=tree.getroot()就相当于f_read=f.read()，即把所有的内容读取出来，并以root对象保存，print（root.tag）打印root最外层标签（根节点）的名字，相当于打印f_read的第一行。
+为了看到标签里面的内容，可以使用for循环：
+for i in root:
+    print(i)====此时得到的是第二层级，即最外层的里面一层。
+for i in root:
+    for j in i:
+        print（i.tag, i.attrib, j.tag, j.attrib）====此时打印出i的标签以及属性，还有i下面的子层级j的标签以及属性。（以字典的方式呈现）

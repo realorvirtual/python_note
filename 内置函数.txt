@@ -1,0 +1,89 @@
+内置函数：
+abs(-1)取绝对值
+all(可迭代对象)，判断可迭代对象是否全是对的，即all函数会判断括号里面对象的每一个元素的布尔值是否是true，空对象、0、None都是false，
+当可迭代对象里面的元素都是true时就返回true，否者返回false。
+any（可迭代对象）之傲可迭代对象里面有一个true就返回true。
+bin(2)把十进制转为二进制，bin（2）==0b10，前面的0b表示二进制。
+bool（x）判断x的布尔值。
+bytes（“你好”，encoding=”utf-8“）==b'\xe4\xbd\xa0\xe5\xa5\xbd'，把字符串转换为字节形式。即编码。
+bytes（“你好”，encoding=”utf-8“）.decode（”utf-8”）==“你好”，把字节转换为字符串形式，即解码。
+chr（数字）根据ascall表进行转换，比如chr（97）=a。
+与chr相反的是ord，比如ord（a）==97。
+dir（函数名），列出函数都可以使用哪些内置方法。
+divmod(10，3)==（3，1），函数表示10/3=3取余1，并把结果放在一个tuple里面。
+list(enumerate(["a","b"])，2)==[(2，”a“），（3，“b”）函数将对列表（可迭代对象）里面的元素进行编号，编号的起始位置为后面输入的参数，返回值为可迭代对象。
+eval（字符串）1.把字符串里面的数据结构（比如说列表、字典）提取出来  2.把字符串里面的运算提取出来并进行运算，比如（“1+2”）==3。
+
+可hash的数据类型即不可变类型，hash是一种算法，hash（“abc”）无论输入的字符串多长，其结果的长度都不变，只要输入的字符串不变，hash值就不变，即输出结果不变。
+
+help（函数）查看函数的详情。
+
+bin(10)十进制转二进制。0b开头。
+hex(10)十进制转十六进制。0x开头。
+oct(10)十进制转八进制。0o开头。
+
+isinstance(["123"],list)判断["123"]是否为list，即判断前面的参数是否是后面规定的类型。
+
+print（globals（））打印全局变量。
+print（locals（））打印当前变量。
+
+max（）找出括号的最大值，可传入数字、列表等，且必须是同类型的数据。如果是字典的话，默认比较key的值，也可以这么做directory.values()比较values的值，directory.keys()比较key的值。
+
+max高级使用：利用max找出列表中的最大元素
+aa=[
+{"name":"a","age":10},
+{"name":"b","age":20},
+{"name":"c","age":30}
+]
+print(max(aa,key=lambda x:x["age"]))
+
+min（）找出括号的最小值。
+
+list（zip（（“a“，”b”），（1，2）））==[("a",1),("b",2)]相当于把传入的两个元组的各个元素（左一个，右一个）放在同一个tuple里面再组成列表。（如果不用list，那么返回一个可迭代对象）
+还可以这样用：
+a={"a":1,"b":2,"c":3}
+y=a.keys()---取出key值。
+z=a.values()---取出value值。
+c=list(zip(y, z))
+print(c)==[('a', 1), ('b', 2), ('c', 3)]
+这样做可以把字典里面的key值以及value值取出来组成一个元组，然后组成一个大列表。
+
+pow（x，y）==x**y
+pow（x，y，z）==x**y%z
+
+reverse(列表)反转列表元素的顺序。
+
+L="hello"
+L[0:2]=="he"
+还可以使用slice：
+s=slice(0,2)
+L[s]=="he"
+
+sorted([1,3,5,7,2,4,6,8])==[1,2,3,4,5,6,7,8]按照大小排序，但只能填入相同类型。
+同样，sorted里面也可以填入key函数，即sorted(people,key=lambda x:x["age"])。
+aa=[
+{"name":"a","age":10},
+{"name":"b","age":20},
+{"name":"c","age":30}
+]
+print(sorted(aa,key=lambda x:x["age"]))==[{'name': 'a', 'age': 10}, {'name': 'b', 'age': 20}, {'name': 'c', 'age': 30}]
+
+locals：传回一个字典，里面是自己定义的一些局部变量。
+def text():
+    msg="哈哈哈"
+    print(locals())
+text()=={'msg': '哈哈哈'}
+
+globals：
+print（globals（））会打印出一个字典，里面包含了系统默认给出的一些变量，以及自己定义的一些全局变量。
+
+vars（）：
+如果不传入参数，那么用法跟globals和locals一样，有局部变量时（比如说在定义函数时）打印局部变量（字典），否则打印全局变量。
+如果有一个参数（函数名，比如int，help等），那么就会返回一个字典，里面存放着这个函数的所有方法。
+
+注意：这个符号object.__dict__的意思是查看对象的所有方法，并以字典的方式返回。
+
+import 函数，首先将自己写好的函数保存在某个文件里面，导出的时候使用import，比如文件名字叫做“text”，函数的名字叫“hello”，那么导入的时候是import text，使用的时候是text.hello()。
+还可以使用__import__(“模块名”)来导入函数，实际上import的调用顺序为import--system--__import__(“模块名”)。
+使用__import__的方法为：m=__import__("模块名")，然后m.函数名()。
+

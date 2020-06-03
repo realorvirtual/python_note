@@ -1,0 +1,77 @@
+1.行内式
+行内式是在标记的style属性中设定CSS样式。这种方式没有体现出CSS的优势，不推荐使用。
+<p style="background-color: rebeccapurple">hello yuan</p>
+
+2.嵌入式
+嵌入式是将CSS样式集中写在网页的<head></head>标签对的<style></style>标签对中。格式如下：
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        p{
+            background-color: #2b99ff;
+        }
+    </style>
+</head>
+
+3 链接式
+将一个.css文件引入到HTML文件中。
+<link href="mystyle.css" rel="stylesheet" type="text/css"/>
+
+4.导入式
+将一个独立的.css文件引入HTML文件中，导入式使用CSS规则引入外部CSS文件，<style>标记也是写在<head>标记中，使用的语法如下：    
+<style type="text/css">
+          @import"mystyle.css"; 此处要注意.css文件的路径
+</style>　
+
+注意：
+      导入式会在整个网页装载完后再装载CSS文件，因此这就导致了一个问题，如果网页比较大则会儿出现先显示无样式的页面，闪烁一下之后，再出现网
+页的样式。这是导入式固有的一个缺陷。使用链接式时与导入式不同的是它会以网页文件主体装载前装载CSS文件，因此显示出来的网页从一开始就是带样
+式的效果的，它不会象导入式那样先显示无样式的网页，然后再显示有样式的网页，这是链接式的优点。
+
+css选择器：
+<style>
+    *{}，通用元素选择器，匹配任何元素。
+    e{}，标签选择器，匹配所有使用e标签的元素，如：p { color:green; }。
+    #id{}，ID选择器，匹配相应ID的元素。记住要在ID前面加上#。
+    .class，class选择器，匹配所有class相同的元素，class类似于ID，每个元素的ID都不相同，但大家的class可以相同。
+    div.class{}，两重限制，匹配div标签中class为class的元素。
+    a，p，div.class{}，多重限制，队列匹配，匹配所有a、p以及div中class为class标签的元素。多元素选择器。
+    div1 div2 div3，匹配div1里面的div2里面的div3里面的元素。后代元素选择器。
+    div1>div2，子元素选择器，匹配所有div1元素的子元素div2。
+    div1+div2，毗邻元素选择器，匹配与div1相邻的且在div1下方的div2的元素。
+</style>
+
+注意嵌套规则：
+1.块级元素可以包含内联元素或某些块级元素，但内联元素不能包含块级元素，它只能包含其它内联元素。
+2.有几个特殊的块级元素只能包含内联元素，不能包含块级元素。如h1,h2,h3,h4,h5,h6,p,dt。
+3.li内可以包含div。
+4.块级元素与块级元素并列、内联元素与内联元素并列。
+
+属性选择器：
+ E[att]             匹配所有具有att属性的E元素，不考虑它的值。（注意：E在此处可以省略，比如“[cheacked]”。以下同。）   p[title] { color:#f00; }
+ E[att=val]      匹配所有att属性等于“val”的E元素                                 div[class=”error”] { color:#f00; }
+ E[att~=val]    匹配所有att属性具有多个空格分隔的值、其中一个值等于“val”的E元素      td[class~=”name”] { color:#f00; }
+ E[attr^=val]   匹配属性值以指定值开头的每个元素                     div[class^="test"]{background:#ffff00;}
+ E[attr$=val]    匹配属性值以指定值结尾的每个元素                     div[class$="test"]{background:#ffff00;}
+ E[attr*=val]    匹配属性值中包含指定值的每个元素                     div[class*="test"]{background:#ffff00;}
+
+
+---------------------------------------------------------伪类(Pseudo-classes)CSS伪类是用来给选择器添加一些特殊效果-----------------------------------------------------
+<style>
+    a:link（没有接触过的链接）,正常状态。
+    a:hover（鼠标放在链接上的状态）,用于产生视觉效果。
+    a:active（在链接上按下鼠标时的状态）,用于表现鼠标按下时的链接状态。
+    a:visited（访问过的链接）,用于阅读文章，能清楚的判断已经访问过的链接。
+</style>
+伪类选择器 : 伪类指的是标签的不同状态:
+
+a ==> 点过状态 没有点过的状态 鼠标悬浮状态 激活状态
+a:link {color: #FF0000} /* 未访问的链接 */
+
+a:visited {color: #00FF00} /* 已访问的链接 */
+
+a:hover {color: #FF00FF} /* 鼠标移动到链接上 */
+
+a:active {color: #0000FF} /* 选定的链接 */ 格式: 标签:伪类名称{ css代码; }
+

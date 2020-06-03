@@ -1,0 +1,36 @@
+非阻塞，selectors模块
+
+import selectors
+from socket import *
+
+def accept(args, kwargs):   
+    conn, addr = sock.accept()  # Should be ready   ---------建立链接
+    print('accepted', conn, 'from', addr)
+    conn.setblocking(False)                                      ---------将链接设为非阻塞状态
+    sel.register(conn, selectors.EVENT_READ, read)   ---------注册，将conn与read函数绑定（在select中，这一步相当于把建立好的链接conn放进监测列表中）
+
+def read(conn,mask):
+    try:
+        data = conn.recv(1000)  # Should be ready
+        print('echoing', repr(data), 'to', conn)
+        conn.send(data)  # Hope it won't block
+    except Exception as e:
+        print('closing', conn)
+        sel.unregister(conn)                                        --------一旦断开链接，注销注册信息（相当于在select中把conn从监听列表中删除）
+        conn.close()
+
+sk = socket(AF_INET,SOCK_STREAM)
+sk.bind(("127.0.0.1",8080))
+sk.listen(5)
+sk.setblocking(False)   ---------------------------------将socket设置为非阻塞状态，socket必须在非阻塞情况下才能实现IO多路复用
+# 这里如果直接 server.accept() ，如果没有连接会报错，所以有数据才调他们
+# BlockIOError：[WinError 10035] 无法立即完成一个非阻塞性套接字操作。
+
+sel=selectors.DefaultSelector()   -----------------------对象实例化
+sel.register(sk, selectors.EVENT_READ, accept)   -----------注册，将sk与accept绑定（在select中，这一步相当于把sk放进监听列表中）
+
+while True:
+    events=sel.select()   ---------------------------------启动监听
+    for key,mask in events:
+        callback=key.data   -------------------------------callback就是此次触发对象所绑定的函数。
+        callback(key.fileobj, mask)   -----------------------只要关注key.fileobj就可以了，它指的是活动的对象，即此次监听的对象。

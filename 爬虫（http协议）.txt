@@ -1,0 +1,149 @@
+http协议的请求介绍：
+（免费代理网址：https://www.xicidaili.com/）
+get：向特定的资源发出请求
+post：向指定资源提交数据进行数据请求，数据被包含在请求体里
+put：向指定资源位置上传其最新内容
+delete：请求服务器删除request-url所标识的资源
+head：只请求页面额首部
+options：允许客户端查看服务器的性能
+
+
+r.content：获取响应体的二进制信息（图片视频等都是以二进制形式获取的）
+r.text：获取响应体的文本信息
+r.encoding：r的编码格式（可以通过r.encoding="gzip"来设置r的编码格式）
+r.url：查看r访问的网址
+r.status_code：状态码（2开头表示成功，3开头重定向，4开头请求错误，5开头服务器错误）
+
+
+
+import requests
+dict={"q":"java"，"p":"python"}
+dict2={cookies}
+r=requests.get(timeout=3，cookies=dict2，params=dict,url="https://www.douban.com",headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'})
+（params为网址后面的参数，以字典的形式传进去，这里查看url，可以发现构造出来的网址为https://www.douban.com?q=java&p=python）
+（cookies以字典的形式上传，timeout=3意思是等待3秒，如果3秒过后没有得到相应将中断请求）
+r.encoding="gzip"
+print(r.url)
+
+session会话：保持状态
+s=requests.session()
+然后就可以使用s.get()、s.post()等等了
+
+proxies代理：
+proxies={"http"："代理地址，可以写多个"}（代理类型有“https”，“http”）
+r=requests.get("http://www.douban.com"，proxies=proxies)
+
+-------------------------------------------------------------------------
+xpath：
+import requests
+from lxml import etree
+
+测试文本：aa
+<div>
+    <li class="item-inactive"><a href="www.baidu.com"></a></li>
+    <li><h1>555</h1></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</div>
+
+查找出所有的li标签：
+selector=etree.HTML(aa)
+all_li=selector.xpath("//div/li")--------//指的是根节点
+
+查找出第一个li元素，注意这里的序号是从1开始的：
+li_1=selector.xpath("//div/li[1]")
+
+提取出a标签里面的文本：
+a1_wenben=selector.xpath("//div/li[1]/a/text()")-----text()提取文本，提取出来的结果是一个列表
+
+通过属性来查找：
+selector.xpath('//div/li[@class="item-inactive"]')---由于在这里这个class是独一无二的，所以可以这样简写，"//li[@class="item-inactive"]"
+（*，还可以这样写，“//*[@class="item-inactive"] ”，*表示根节点下面所有的标签）
+（当然也可以通过href属性来定位，"//*[@href='www.baidu.com']"）
+ 
+提取href的值，提取属性的值：
+"//li/a/@href"
+（同理，提取class的属性，"//*/@class"）
+
+xpath的高级用法：
+提取所有的含有以“item-”开头的class属性的li标签：
+"//li [ starts-with（@class，“item-”）]"
+查找name属性中包含na关键字的页面元素：
+"//input[contains(@name,'na')]"
+
+当然也可以对已经提取出来的标签进行二次提取：
+比如我第一次提取出来一个标签：
+li_first=selector.xpath("//li[1]")[0]
+然后再提取出li_first里面的li标签：
+li_second=li_first.xpath("li")[0]
+
+提取所有文本：
+.xpath("string（//li）")-----意思是，提取根节点下所有的li标签里面的所有文本
+
+
+反反爬虫方法：
+1.设置headers
+2.保存cookies
+3.设置timesleep
+4.设置proxies
+5.爬取移动页面
+6.selenium
+
+
+etree.tostring(selector)--------输出字符串形式的selector，也就是字符串形式的html代码
+
+
+二次匹配中的二次解析：如果不进行二次解析，那么在xpath（“//”）里面加入//表示从最开始html文档中查找，而不是从二次etree对象中开始
+i = etree.tostring(i)  # 将etree对象转换为字节
+    i = etree.HTML(i)  # 解析-----------将i变成最大级别的etree对象，从而可以使用//来表示该对象的根节点
+    content = i.xpath('//li/a/text()')
+    print('结果：', content)
+
+
+/bookstore/book           选取根节点bookstore下面所有直接子节点book
+    //book                    选取所有book
+    /bookstore//book          查找bookstore下面所有的book
+    /bookstore/book[1]        bookstore里面的第一个book
+    /bookstore/book[last()]   bookstore里面的最后一个book
+    /bookstore/book[position()<3]  前两个book
+    //title[@lang]            所有的带有lang属性的title节点
+    //title[@lang='eng']      所有的lang属性值为eng的title节点
+    属性定位
+            //li[@id="hua"]
+            //div[@class="song"]
+    层级定位&索引
+            //div[@id="head"]/div/div[2]/a[@class="toindex"]
+            【注】索引从1开始
+            //div[@id="head"]//a[@class="toindex"]
+            【注】双斜杠代表下面所有的a节点，不管位置
+     逻辑运算
+            //input[@class="s_ipt" and @name="wd"]
+     模糊匹配 ：
+          contains
+                //input[contains(@class, "s_i")]
+                所有的input，有class属性，并且属性中带有s_i的节点
+                //input[contains(text(), "爱")]
+            starts-with
+                //input[starts-with(@class, "s")]
+                所有的input，有class属性，并且属性以s开头
+      取文本
+            //div[@id="u1"]/a[5]/text()  获取节点内容
+            //div[@id="u1"]//text()      获取节点里面不带标签的所有内容
+      取属性
+            //div[@id="u1"]/a[5]/@href
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+

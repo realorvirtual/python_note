@@ -1,0 +1,72 @@
+错误分为语法错误和逻辑错误。
+语法错误：print("hello"---少了括号，if a---少了冒号，就是不按照规定去写代码。
+逻辑错误：像res=1/0，          还有aa=[1,2]，aa[10]，本身不存第10个元素，这就是逻辑错误。
+异常就是程序运行时发生错误的信号。
+
+
+异常信息：由三部分组成
+Traceback===》追踪信息--exc_tb
+NameError===》异常类--exc_type
+NameError：信息===》异常值--exc_val
+
+
+AttributeError 试图访问一个对象没有的树形，比如foo.x，但是foo没有属性x
+
+IOError 输入/输出异常；基本上是无法打开文件
+ImportError 无法引入模块或包；基本上是路径问题或名称错误
+
+IndentationError 语法错误（的子类） ；代码没有正确对齐
+IndexError 下标索引超出序列边界，比如当x只有三个元素，却试图访问x[5]
+
+KeyError 试图访问字典里不存在的键
+KeyboardInterrupt Ctrl+C被按下
+
+NameError 使用一个还未被赋予对象的变量
+
+SyntaxError Python代码非法，代码不能编译(个人认为这是语法错误，写错了）
+
+TypeError 传入对象类型与要求的不符合
+
+UnboundLocalError 试图访问一个还未被设置的局部变量，基本上是由于另有一个同名的全局变量，
+导致你以为正在访问它
+
+ValueError 传入一个调用者不期望的值，即使值的类型是正确的
+
+语法上的错误与异常处理无关，必须在程序运行前就修正。
+
+处理异常：即代码执行到有错误的地方时，整体代码继续运转，不会停止。
+try:
+    被检测代码（即有可能出错的代码）
+except ValueError（可以是其他错误信息，也可以不写） as e： （as e的目的是方便下面直接提取错误信息ValueError）
+    print(e)
+该代码表示，如果被检测代码出现错误，会捕捉到错误信息并且打印出来，且下面的代码正常执行。但是检测到错误时，try里面、发生错误代码下面的代码不会执行，且立刻跳到except这一步。
+也可以这么写：
+try:
+    被检测代码
+except ValueError as e:
+    print(e)
+except KeyError as e:
+    print(e)
+异常类只能用来处理指定的异常信息，如果上面只有ValueError，而发生的是KeyError的错误，那么程序就会报错。
+当然有个可以捕捉任何异常的类，叫Exception，except Exception------可以捕捉任何异常。（万能异常）
+
+异常处理常用while循环来辅助：
+while True:
+    try:
+        age=input()
+        int(age)
+        break
+    except Exception as e:
+        print("请重新输入")
+当被检测代码发生错误时或直接跳转到except那一步，然后继续循环，直到输入正确，这时候break就会执行跳出循环。
+还可以在try、except下面加入下面两个代码：
+else:
+    print("没有异常时执行")
+finally:
+    print("有无异常都要执行，通常是进行清理工作")
+
+断言 assert：
+print("===")
+assert 1==2
+print("===")
+==>运行结果是===，断言的内容一旦不成立，后面的代码将不会执行，且会抛出错误AssertionError。

@@ -1,0 +1,279 @@
+jQuery：
+虽然jQuery对象是包装DOM对象后产生的，但是jQuery无法使用DOM对象的任何方法，同理DOM对象也不能使用jQuery里的方法。
+$variable[0]：jquery对象转为dom对象 -----------只需在jQuery对象后面加上[0]即可将该对象转换为dom对象，从而可以使用dom方法。      
+例如：下面两个方法的效果是一样的。
+$("#msg").html();---------------使用jQuery方法获取html。
+ $("#msg")[0].innerHTML;------先转换为dom对象再使用dom方法。
+
+基础语法：$（selector）.action() ---------------selector选择器，action动作。
+
+基本选择器      
+$("*")  $("#id")   $(".class")  $("element")  $(".class,p,div")
+
+层级选择器      
+$(".outer div")-------outer子级所有的div标签。  $(".outer>div")-------outer第一子级div标签，如果第一子级不是div，将不起效果。  $(".outer+div")-----------找到outer下方相邻的div标签。  $(".outer~div")-----------找到outer下方同级的div标签，可以不相邻。
+
+基本筛选器      
+$("li:first")--------li下第一个标签。   $("li:eq(2)") --------li下第二个标签。   $("li:even") -------li下所有的偶数（odd为奇数）。    $("li:gt(2)") -------- li下面第2个标签以下的标签（ li : lt(2) ，li第2个标签以上的标签）。
+
+属性选择器    
+$('[id="div1"]')   $('["alex="sb"][id]') ------------多重限制的话可以这么写：（"[id="div1"]" "[class="div"]" ）
+$('select[class="tt"]')-----------------------------找到 class==tt 的select标签
+
+表单选择器     
+$("[type='text']")----->$(":text")         注意只适用于input标签  : $("input:checked")
+
+还可以这么写：$（"div"）.eq（2）.css（color：red）
+
+查找选择器
+$(".outer").children("p").css("color","red") -----------找到outer的第一子级p。
+$(".outer").find("p").css("color","red") ---------------找到outer的所有子级p标签。$('select[class="tt"]').find('option[value="qq"]') --------先找到class=tt的select标签，然后再找到该标签下面的value=qq的option标签。                  
+ $(".test").next() --------------------------------------下一个标签。   
+$(".test").nextAll() ------------------------------------下面所有的标签。
+$(".test").nextUntil(“#end”) ------------------------直到#end标签。
+ $("div").prev() ----------------------------------------上一个标签。
+$("div").prevAll() --------------------------------------上面所有标签。
+$("div").prevUntil() ------------------------------------直到。
+ $(".test").parent() -------------------------------------父级标签。
+$(".test").parents() -------------------------------------一直往外找父级标签，直到最外层。
+$(".test").parentUntil() --------------------------------直到。
+ $("div").siblings() -------------------------------------毗邻，找到与自己相同等级的兄弟标签，且上下面的标签都会去查找。
+（上面的until直到，都不包括“直到”那层）
+
+过滤筛选器     
+$("li").eq(2) ---------找到li中位置为2的li。
+$("li").first()  
+$("li").hasclass("test")
+在jQuery中判断某个标签里面是否含有某class时可以使用 hasClass("classname")或者 is(".classname")。
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+$("li").attr("test")------------------获取li标签里test对应的属性值，如果输入两个参数，表示进行赋值，第一个参数为name，第二个参数为value。
+$("").removeAttr();
+$("li").prop("test")------------------获取li标签里test对应的属性值。
+$("").removeProp();
+对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
+//对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法。
+//像checkbox，radio和select这样的元素，选中属性对应“checked”和
+“selected”，这些也属于固有属性，因此需要使用prop方法去操作才能获得正确的结果。
+--------------------------CSS类
+$("").addClass(class|fn)
+$("").removeClass([class|fn])
+--------------------------HTML代码/文本/值
+$("").html([val|fn])-------括号里面没内容的话，获取标签里面所有的内容，有内容的话表示进行替换。
+$("").text([val|fn]) -------括号里面没内容的话，获取标签里面所有的内容，有内容的话表示进行替换，且无论括号里面的内容是什么，都会被当成字符串进行替换。
+$("").val([val|fn|arr])-----括号里面没内容的话，获取标签里面的value值，有内容的话表示进行替换。
+---------------------------
+$("").css({"color":"red"})-添加css属性。
+---------------------------$.each遍历
+方式一：
+arr=[11,22,33]
+    $.each(arr,function(x,y){
+        console.log(x) -----------------------x为下标，即arr里面元素的位置。
+        console.log(y) -----------------------y为arr里面的元素。
+    })
+
+方式二：
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+$("p").each(function () {
+        console.log($(this))
+    })
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+创建一个标签对象
+$("<p>")
+（注意创建完标签后得用append添加到父级标签后面才能用）
+
+内部插入 
+$("").append(content|fn)      -----
+>$("p").append("<b>Hello</b>");往p标签里面添加b标签。
+    
+$("").appendTo(content)       ----->$("p").appendTo("div");将p标签添加到div标签里面。
+    
+$("").prepend(content|fn)     -----
+>$("p").prepend("<b>Hello</b>");往p标签里面添加b标签，且内容将会添加到最前面。
+    
+$("").prependTo(content)      ----->$("p").prependTo("#foo");将p标签添加到foo里面，且内容将会添加到最前面。
+
+外部插入
+$("").after(content|fn)       -----
+>$("p").after("<b>Hello</b>");在p标签下面添加b标签。
+
+$("").before(content|fn)      -----
+>$("p").before("<b>Hello</b>");在p标签上面添加b标签。
+
+$("").insertAfter(content)    ----->$("p").insertAfter("#foo");将p标签添加到foo标签的下面。
+    
+$("").insertBefore(content)   ----->$("p").insertBefore("#foo");将p标签添加到foo标签的上面。
+
+//替换 
+$("").replaceWith(content|fn) ----->$("p").replaceWith("<b>Paragraph. </b>");
+
+//删除
+    $("").empty()----------清空内部内容，不会删除标签。
+    $("").remove([expr])---删除标签。（可不填里面的参数）
+
+//复制
+    $("").clone([Even[,deepEven]])
+
+---------------------------------------------------------------------------------------------------------------------------------------
+CSS
+        $("").css(name|pro|[,val|fn])
+    位置
+        $("").offset([coordinates])相对于视口的偏移量。
+（返回或设置偏移量，设置的时候可以这样写offset({top:100,left:100}）,默认为像素px)
+        $("").position()相对于已经定位的父标签的偏移量。
+        $("").scrollTop([val])无参数时返回滚轮的位置，输入参数时设置滚轮的垂直位置。（一般这样用，$(window).scrollTop(0)----返回顶部）
+        $("").scrollLeft([val])
+
+拖动滚动条时触发函数：
+window.onscroll=function () {
+    console.log($(window).scrollTop()----每拉动一段距离打印一次滚动条位置)
+}
+
+内容溢出时的滚动条：
+在style里面设置overflow：auto、hidden、scroll、inherit、visible
+visible	默认值。内容不会被修剪，会呈现在元素框之外。
+hidden	内容会被修剪，并且其余内容是不可见的。
+scroll	内容会被修剪，但是浏览器会显示滚动条以便查看其余的内容。
+auto	如果内容被修剪，则浏览器会显示滚动条以便查看其余的内容。
+inherit	规定应该从父元素继承 overflow 属性的值。
+（当你需要设置一个带滑轮的小窗口时，就可以加上overflow，且此时设置返回顶部等属性时，不再是使用window，而是用本小窗口对应的标签，即$(".div").scrollTop(0)）
+
+    尺寸
+        $("").height([val|fn])
+        $("").width([val|fn])
+        $("").innerHeight()
+        $("").innerWidth()
+        $("").outerHeight([soptions])
+        $("").outerWidth([options])
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+绑定函数：
+$("").bind("click",function)----------绑定点击事件。
+简写形式$("").click(function)
+
+解除绑定.
+$("").unbind("click")
+
+(但是以上绑定函数会有个问题，例如你给ul下的li标签绑定了一个函数，当你新建一个新的li标签时，新的标签不会绑定这个函数，例如$("ul li").click(function)，给ul下的li绑定函数function，后面添加的li标签不会绑定这个函数，相当于只认最开始的li)
+
+解决办法：使用事件委托on
+$("ul").on("click","li",function) ----------------相当于主语变成了ul，然后将绑定事件委托给ul下面的li，也就是说，每次点击都会先找到ul，然后给ul下面所有的li绑定委托事件。
+$("ul").delegate("li","click",function)，使用效果与on一样，只是将第一第二个参数换了位置而已。
+
+---------------------------------------------------------------------------------------------------------------------------------------
+$(document).ready(function(){
+              代码 -----------------------------等整个代码块加载完成后才去执行该代码。
+})
+（上述方法类似于onload）
+
+简写方式：$(function(){
+              代码
+})
+
+页面载入
+    ready(fn)  //当DOM载入就绪可以查询及操纵时绑定一个要执行的函数。
+    $(document).ready(function(){}) -----------> $(function(){})
+
+事件处理
+    $("").on(eve,[selector],[data],fn)  // 在选择元素上绑定一个或多个事件的事件处理函数。
+
+    //  .on的selector参数是筛选出调用.on方法的dom元素的指定子元素，如：
+    //  $('ul').on('click', 'li', function(){console.log('click');})就是筛选出ul下的li给其绑定
+    //  click事件；
+
+    [selector]参数的好处:
+        好处在于.on方法为动态添加的元素也能绑上指定事件；如：
+
+        //$('ul li').on('click', function(){console.log('click');})的绑定方式和
+        //$('ul li').bind('click', function(){console.log('click');})一样；我通过js给ul添加了一个
+        //li：$('ul').append('<li>js new li<li>')；这个新加的li是不会被绑上click事件的
+
+        //但是用$('ul').on('click', 'li', function(){console.log('click');}方式绑定，然后动态添加
+        //li:$('ul').append('<li>js new li<li>');这个新生成的li被绑上了click事件
+    
+    [data]参数的调用:
+             function myHandler(event) {
+                alert(event.data.foo);
+                }
+             $("li").on("click", {foo: "bar"}, myHandler)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+动画效果：
+
+显示/隐藏：
+$("").hide(1000)----里面的1000指的是在1000ms内慢慢隐藏。
+$("").show(1000)
+$("").toggle(1000)----切换，相当于集成了上面两个函数的功能，当hide时切换成show，当show时切换成hide。
+滑进/滑出:
+$("").slideDown(1000)
+$("").slideup(1000)
+$("").slideToggle(1000)
+淡入/淡出:
+fadeIn，fadeOut，fadeToggle，fadeTo（1000，0.6）---fadeTo两个参数，第一个是淡化时间，第二个是不透明度。
+回调函数：前面函数执行完成之后会执行的函数。
+例如：$("").show(1000，function())--------后面的function就是回调函数，当执行完成show之后便会执行unction函数。
+
+------------------------------------------------------------------------------------------------------------------------------------------
+扩展方法，插件：
+$.extend(object)      //为JQuery 添加一个静态方法。
+例子：
+$.extend({xixi:function () {
+   alert("youyou")
+}});
+    $.xixi()
+
+
+$.fn.extend(object)   //为JQuery实例添加一个方法。
+例子：
+$.fn.extend({good:function () {
+    alert("xixix")
+}});
+    $("div").good()
+
+------------------------------------------------------------------------------------------------------------------------------------------
+mouseover，mouseenter，mouseout，mouseleave，鼠标悬浮事件：
+mouseover 事件在鼠标指针进入被选元素或任意子元素时都会被触发。
+mouseenter 事件在鼠标指针进入被选元素时被触发。
+mouseout 事件在鼠标指针离开被选元素或任意子元素时都会被触发。
+mouseleave 事件只有在鼠标指针离开被选元素时被触发。
+
+------------------------------------------------------------------------------------------------------------------------------------------
+index() 方法返回指定元素相对于其他指定元素的 index 位置。
+stop()   停止前面一切的动作并执行后面的操作。（例如轮播图，当你快速地在各个图片上划过时，产生的fadeIn和fadeOut延迟可以通过stop来消除掉）
+hover(function1,function2) 鼠标悬浮的时候触发function1，鼠标离开时触发function2。
+
+----------------------------------------------------------------------------
+判断studio单选框选择的结果：
+<input type="radio" name="inlineRadioOptions" id="gender" value="man"> 男
+<input type="radio" name="inlineRadioOptions" id="gender" value="woman"> 女
+$("#gender").each(function (){ 
+
+if($(this).prop("checked")){ }
+
+} )
+
+对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
+//对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法。
+//像checkbox，radio和select这样的元素，选中属性对应“checked”和
+“selected”，这些也属于固有属性，因此需要使用prop方法去操作才能获得正确的结果。
+
+
+ajax-------serialize（）--------- 本方法用于获取form表单各元素的值
+$("#ww").click(function () {
+    $.ajax({
+        url:"/test.html/",
+        data:$("#qq").serialize(),
+        type:"post",
+        success:function (argv) {
+            $(".qqq").text(argv)
+        }
+    }
+    )
+})
+
+
+

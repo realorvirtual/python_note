@@ -1,0 +1,27 @@
+xml模块：
+for i in f.iter("tag名")：
+    print(i.tag, i.attrib，i.text)======f.iter("tag")这个函数会将所有的标签名为tag的数据提取出来。然后打印tag，attrib，像<abc>200</abc>这样的数据，就可以用text将200打印出来
+给i加属性的方法：i.set("key", "value")，然后执行f.write("文件名")，只有完成了这一步才能真正地将文档的内容进行修改完成。
+修改：
+for i in root.findall("conutry"):找到所有的country（包括country里面的内容，这就是与iter不同的地方，iter指挥把country那一行找出来，不会把里面的内容也一同带出来）。
+找到country后，可以用country.find("rank")将country的子层级rank找出来，然后进行操作。
+root.remove(country)将country删除。
+
+创建xml：
+import xml.etree.ElementTree as xm
+new_xml=xm.Element("namelist")#创建一个根节点，函数会在文本里面创建如下的标签。
+#<namelist>
+#</namelist>
+name=xm.SubElement(new_xml,"name",attrib={"enrolled":"yes"})
+#<namelist>
+    #<name enrolled="yes"/>
+#</namelist>
+age=xm.SubElement(name,"age",atttrib={"checked":"no"})
+#<namelist>
+    #<name enrolled="yes">
+        #<age checked="no"/>
+    #</name>
+#</namelist>
+sex=xm.SubElement(name,"sex",attrib={"sex":"man"})
+et=xm.ElementTree(new_xml)#生成文档对象
+et.write("new_xml.xml")#还可以这样写("文件名",encoding="utf-8",xml_declaration=True)

@@ -1,0 +1,31 @@
+text[0]表示索引text第0个位置的数据。
+text[0:1]表示索引范围为【0，1）不包括1。小技巧：1-0=1，用后面的数减去前面的数就表示索引出来的元素的个数。
+text[0:-1]索引到最后一个位置，但不包括最后一个元素。text[0:-5]索引到倒数第五个位置，也可以理解为去掉最后五个元素。
+
+len(text)判断出text的长度。
+
+for循环：
+text=["csc","csc"]
+for x in text:
+  print(x)
+输出：csc
+          csc
+text=“cscscs”
+for x in text:
+  print(x)
+输出：cscscs
+
+brake跳出循环：
+for x in text:
+  break
+
+continue结束本次循环并进入下一次循环：
+for x in text:
+  continue
+
+range(1,100,5):创建一系列数字,如果后面没有5那么数字是连续的，如果后面填了数字，表示每隔多少个便取一个，5表示每隔5个数取一个数字，即1，6，11，16，21，26。
+random:
+首先得导入函数，即import random
+v2=random.randint(100,1000)表示随机取一个100到1000的数字。
+
+字符串不可修改，一旦修改就会新生成一个字符串

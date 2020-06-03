@@ -1,0 +1,24 @@
+configparser模块：针对配置文件进行操作   文件类型（.ini）
+import configparser
+config=configparser.ConfigParser()
+config["DEFAULT"]={"a":1,"b":2}
+with open("example.ini","w") as configfile:
+    config.write(configfile)
+
+config.sections()打印块名(除DEFAULT以外的块名)。
+config["模块名]["key"]取出value值。
+
+可以使用for循环对文件进行遍历。（遍历的时候默认会把DEFAULT遍历出来）
+for value in config:
+
+config.options("块名")将key名放到一个列表里面输出。
+config.items("块名")将key跟value的组合放到一个列表里面输出。
+config.get("块名"，"key名")取出vlue值，如果块里面没有相对应的key，那么函数会去DEFAULT里面查找相应的key，然后输出value。
+
+config.add_section("块名")增加块。
+config.set("块名","key","value")在存在的块里面增添key和value。
+config.remove_section("块名")删除块。
+config.remove_option("块名","key")删除key。
+
+
+最后记得写上config.write(open("文件名","w"))这样才会把修改的内容保存下来。

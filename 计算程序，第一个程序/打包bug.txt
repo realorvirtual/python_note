@@ -1,0 +1,9 @@
+打包问题：
+1.This application failed to start because it could not find or load the Qt platform plugin "windows"
+解决方案：https://blog.csdn.net/qq_35488967/article/details/78504392
+（保留文件于python笔记/打包bug）
+
+2.no model name sip 
+解决方案：在源码中写入-- import sip    （使用anaconda解释器的时候）
+
+

@@ -1,0 +1,52 @@
+迭代器跟可迭代对象的关系：迭代器就是可迭代对象。
+
+生成器：使用yield返回，而不是return返回，且yield可以返回多次。
+def test():
+    yield 1
+    yield 2
+    yield 3
+g=test()
+print(g)
+print(g.__next__())
+print(g.__next__())
+print(g.__next__())
+
+t.send("abc")函数将把后面的字符串返回给上一个yield。
+
+返回为：<generator object test at 0x0000026F08895A20>
+1
+2
+3
+生成器还可以这样创建：
+generate__list=("哈哈%s"%i  for i in range(10))前面的"哈哈%s"%i 可以省去。然后想打印出generate__list的值，就要调用__next__()，每调用一次就返回一个值。
+
+触发生成器的方法除了调用t.__next__()之外还有next(t)。
+
+三元表达式：
+
+x  if  (表达式)  else y     ====x为条件成立的返回值，y为条件不成立时的返回值。
+例如：
+name=“alex”
+res= “美女” if name==“alex”else “帅哥”
+print（res）==“美女”
+
+列表解析：
+egg=[]
+for i in range(10):
+    egg.append("鸡蛋%s"%i)
+print(egg)==['鸡蛋0', '鸡蛋1', '鸡蛋2', '鸡蛋3', '鸡蛋4', '鸡蛋5', '鸡蛋6', '鸡蛋7', '鸡蛋8', '鸡蛋9']
+上面例子可以通过列表解析完成：
+["鸡蛋%s"%i   for i in range(10)  ]
+
+上面的列表还可以加入个表达式，变成三元表达式：["鸡蛋%s"%i   for i in range(10)  if i < 5 ]，注意：该判断条件没有else，因为只能是三元表达式，而不能变成四元表达式。
+
+生成器表达式：列表解析[i for i in range (10)]，将中括号 [ ] 改为（）就变成了生成器，然后就可以调用__next__()来取得返回值。
+
+生成器的好处：可以满足及时需求，需要就生产，不占用太多内存。
+
+t.send("abc")函数将把后面的字符串返回给上一个yield。
+
+
+
+
+
